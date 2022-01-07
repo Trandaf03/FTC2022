@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utilities.driveUtilities;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
 /**
@@ -13,10 +14,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class powerBehavior {
 
     //The 4 robot drive motors
-    private DcMotor a = null;
-    private DcMotor b = null;
-    private DcMotor c = null;
-    private DcMotor d = null;
+    private DcMotorEx leftfront = null;
+    private DcMotorEx leftrear = null;
+    private DcMotorEx rightfront = null;
+    private DcMotorEx rightrear = null;
 
     //Breaking modes
     public enum ROBOT_BREAKING{
@@ -28,11 +29,11 @@ public class powerBehavior {
 
     }
     // initialization for the motors declared here
-    public void setMotorsName(DcMotor leftFront, DcMotor leftRear, DcMotor rightFront, DcMotor rightRear){
-        a = leftFront;
-        b = leftRear;
-        c = rightFront;
-        d = rightRear;
+    public void setMotorsName(DcMotorEx leftFront, DcMotorEx leftRear, DcMotorEx rightFront, DcMotorEx rightRear){
+        leftfront = leftFront;
+        leftrear = leftRear;
+        rightfront = rightFront;
+        rightrear = rightRear;
 
     }
     /**
@@ -41,16 +42,16 @@ public class powerBehavior {
     public void setBreakingMode(ROBOT_BREAKING breakingMode){
         switch (breakingMode){
             case BRAKE:
-                a.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                b.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                c.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                d.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                rightfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                rightrear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 break;
             case FLOAT:
-                a.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                b.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                c.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                d.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                rightfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                rightrear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 break;
             default:
                 break;

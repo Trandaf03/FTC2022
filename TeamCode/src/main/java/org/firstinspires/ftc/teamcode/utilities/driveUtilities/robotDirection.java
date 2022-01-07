@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.utilities.driveUtilities;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 /**
@@ -12,10 +12,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class robotDirection {
 
     //The 4 robot drive motors
-    private DcMotor a = null;
-    private DcMotor b = null;
-    private DcMotor c = null;
-    private DcMotor d = null;
+    private DcMotorEx leftfront = null;
+    private DcMotorEx leftrear = null;
+    private DcMotorEx rightfront = null;
+    private DcMotorEx rightrear = null;
 
     //Robot movement directions
     public enum ROBOT_DIRECTIONS{
@@ -26,11 +26,11 @@ public class robotDirection {
 
     }
     // initialization for the motors declared here
-    public void setMotorsName(DcMotor leftFront, DcMotor leftRear, DcMotor rightFront, DcMotor rightRear){
-        a = leftFront;
-        b = leftRear;
-        c = rightFront;
-        d = rightRear;
+    public void setMotorsName(DcMotorEx leftFront, DcMotorEx leftRear, DcMotorEx rightFront, DcMotorEx rightRear){
+        leftfront = leftFront;
+        leftrear = leftRear;
+        rightfront = rightFront;
+        rightrear = rightRear;
     }
 
     /**
@@ -39,28 +39,28 @@ public class robotDirection {
     public void setRobotDirection(ROBOT_DIRECTIONS direction){
         switch (direction){
             case FORWARD:
-                a.setDirection(DcMotorSimple.Direction.FORWARD);
-                b.setDirection(DcMotorSimple.Direction.REVERSE);
-                c.setDirection(DcMotorSimple.Direction.REVERSE);
-                d.setDirection(DcMotorSimple.Direction.FORWARD);
+                leftfront.setDirection(DcMotorSimple.Direction.FORWARD);
+                leftrear.setDirection(DcMotorSimple.Direction.REVERSE);
+                rightfront.setDirection(DcMotorSimple.Direction.REVERSE);
+                rightrear.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             case REVERSE:
-                a.setDirection(DcMotorSimple.Direction.REVERSE);
-                b.setDirection(DcMotorSimple.Direction.FORWARD);
-                c.setDirection(DcMotorSimple.Direction.FORWARD);
-                d.setDirection(DcMotorSimple.Direction.REVERSE);
+                leftfront.setDirection(DcMotorSimple.Direction.REVERSE);
+                leftrear.setDirection(DcMotorSimple.Direction.FORWARD);
+                rightfront.setDirection(DcMotorSimple.Direction.FORWARD);
+                rightrear.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
             case LEFT:
-                a.setDirection(DcMotorSimple.Direction.REVERSE);
-                b.setDirection(DcMotorSimple.Direction.REVERSE);
-                c.setDirection(DcMotorSimple.Direction.REVERSE);
-                d.setDirection(DcMotorSimple.Direction.REVERSE);
+                leftfront.setDirection(DcMotorSimple.Direction.REVERSE);
+                leftrear.setDirection(DcMotorSimple.Direction.REVERSE);
+                rightfront.setDirection(DcMotorSimple.Direction.REVERSE);
+                rightrear.setDirection(DcMotorSimple.Direction.REVERSE);
                 break;
             case RIGHT:
-                a.setDirection(DcMotorSimple.Direction.FORWARD);
-                b.setDirection(DcMotorSimple.Direction.FORWARD);
-                c.setDirection(DcMotorSimple.Direction.FORWARD);
-                d.setDirection(DcMotorSimple.Direction.FORWARD);
+                leftfront.setDirection(DcMotorSimple.Direction.FORWARD);
+                leftrear.setDirection(DcMotorSimple.Direction.FORWARD);
+                rightfront.setDirection(DcMotorSimple.Direction.FORWARD);
+                rightrear.setDirection(DcMotorSimple.Direction.FORWARD);
                 break;
             default:
                 break;
