@@ -65,19 +65,11 @@ public class driveComponents {
     private double globalAngle = 0;
     private double grade;
 
-    private List<PIDCoefficients> pidCoef;
-    private List<Double> integralPower;
-    private List<Double> lastError;
 
-    private List<Double> motorPowers;
     private double v1Power,v2Power,v3Power,v4Power;
 
     public driveComponents(){
-        motorPowers = Arrays.asList(v1Power,v2Power,v3Power,v4Power);
 
-        /*for(Double x : motorPowers){
-            x++;
-        }*/
     }
 
     /**
@@ -135,7 +127,7 @@ public class driveComponents {
     /**
      * Main function for moving the robot in the Autonomous period
      * */
-    /*public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
+    public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
         // Forward / Reverse movement
         if(nextX != 0 && nextY == 0){
             if(nextX > 0){
@@ -158,11 +150,11 @@ public class driveComponents {
         if(nextX != 0 && nextY != 0){
             moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
         }
-    }*/
+    }
     /**
      * Secondary function for moving the robot in the Autonomous Period, used to call the function that is needed to be called, (OPTIONAL)
      * */
-    /*private void moveToPosition(ROBOT_MOVEMENT movement_direction, double xDistance, double yDistance, double speed) throws InterruptedException {
+    private void moveToPosition(ROBOT_MOVEMENT movement_direction, double xDistance, double yDistance, double speed) throws InterruptedException {
         switch (movement_direction){
             case FORWARD_DIR:
                 xMovement(-xDistance,speed);
@@ -181,12 +173,12 @@ public class driveComponents {
                 break;
 
             case SPLINE_TO_DIR:
-                spline(-xDistance, yDistance, speed);
+                //spline(-xDistance, yDistance, speed);
                 break;
             default:
                 break;
         }
-    }*/
+    }
 
     /**
      * Functions used to move the robot in the Autonomous period
@@ -227,62 +219,46 @@ public class driveComponents {
         setMotorsDisabled();
 
     }
+    private void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
+        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
+        double angle = Math.atan2(xDistance,yDistance);
 
-
-    private void spline(double distance, double angle, double speed) throws InterruptedException{
-        //double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
-
-
-        Thread.sleep(100);
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setMotorsEnabled();
 
         Thread.sleep(100);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+        Thread.sleep(100);
+
         leftFront.setTargetPosition(-(int)distance);
         rightRear.setTargetPosition(-(int)distance);
         rightFront.setTargetPosition(-(int)distance);
         leftRear.setTargetPosition(-(int)distance);
 
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
+        double powerFront = Math.sin(angle + (Math.PI / 4)) * speed;
+        double powerBack = Math.sin(angle - (Math.PI/4)) * speed;
+        double correctionAngle;
+        do {
+            leftFront.setPower(powerFront);
+            rightRear.setPower(powerBack);
+            rightFront.setPower(powerBack);
+            leftRear.setPower(powerFront);
 
-        leftFront.setPower(Math.sin(angle + (Math.PI/4)) * speed);
-        rightRear.setPower(Math.sin(angle - (Math.PI/4)) * speed);
+            powerBack = Math.sin(angle - (Math.PI/4)) * speed;
+            powerFront = Math.sin(angle + (Math.PI / 4)) * speed;
+        } while(leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy());
 
-        rightFront.setPower(Math.sin(angle - (Math.PI/4)) * speed);
-        leftRear.setPower(Math.sin(angle + (Math.PI/4)) * speed);;
-
-        while (leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy()){
-            leftFront.setPower(Math.sin(angle + (Math.PI/4)) * speed);
-            rightRear.setPower(Math.sin(angle - (Math.PI/4)) * speed);
-
-
-            rightFront.setPower(Math.sin(angle - (Math.PI/4)) * speed);
-            leftRear.setPower(Math.sin(angle + (Math.PI/4)) * speed);
-        }
-
-        leftFront.setPower(0);
-        rightRear.setPower(0);
-        rightFront.setPower(0);
-        leftRear.setPower(0);
+       stopping.driveStop();
+       setMotorsDisabled();
 
     }
-
 
     /**
      * Robot rotation functions
      * */
+
     private void resetAngle() {
         grade = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
         globalAngle = 0;
@@ -314,7 +290,7 @@ public class driveComponents {
         corectie = corectie * unghi_corectie;
         return corectie;
     }
-    private void rotateRobot(double degrees, double power) {
+    public void rotateRobot(double degrees, double power) {
 
         double  lp, rp;
         resetAngle();
@@ -384,7 +360,6 @@ public class driveComponents {
 
         setMotorsDisabled();
     }
-
 
     /**
      * PID correction for the motors
