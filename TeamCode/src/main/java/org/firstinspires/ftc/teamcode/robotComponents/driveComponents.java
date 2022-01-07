@@ -183,7 +183,7 @@ public class driveComponents {
     /**
      * Functions used to move the robot in the Autonomous period
      * */
-    private void xMovement(double distance, double speed) throws InterruptedException {
+    public void xMovement(double distance, double speed) throws InterruptedException {
         setMotorsEnabled();
 
         distance *= COUNTS_PER_CM;
@@ -201,7 +201,7 @@ public class driveComponents {
        setMotorsDisabled();
 
     }
-    private void yMovement(double distance, double speed) throws InterruptedException {
+    public void yMovement(double distance, double speed) throws InterruptedException {
         setMotorsEnabled();
 
         distance *= COUNTS_PER_CM;
@@ -219,35 +219,39 @@ public class driveComponents {
         setMotorsDisabled();
 
     }
-    private void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
+    public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
         double angle = Math.atan2(xDistance,yDistance);
-
         setMotorsEnabled();
-
         Thread.sleep(100);
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
         Thread.sleep(100);
-
-        leftFront.setTargetPosition(-(int)distance);
-        rightRear.setTargetPosition(-(int)distance);
-        rightFront.setTargetPosition(-(int)distance);
-        leftRear.setTargetPosition(-(int)distance);
+        encoders.setTargetPositionXmovement(-(int)distance);
 
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
-        double powerFront = Math.sin(angle + (Math.PI / 4)) * speed;
-        double powerBack = Math.sin(angle - (Math.PI/4)) * speed;
+        double power1 = Math.sin(angle + (Math.PI / 4)) * speed;
+        double power2 = Math.sin(angle - (Math.PI/4)) * speed;
+
+        leftFront.setVelocity(power1);
+        rightRear.setVelocity(power1);
+
+        rightFront.setVelocity(power2);
+        leftRear.setVelocity(power2);
+
         double correctionAngle;
         do {
-            leftFront.setPower(powerFront);
-            rightRear.setPower(powerBack);
-            rightFront.setPower(powerBack);
-            leftRear.setPower(powerFront);
+            correctionAngle = checkDirection();
+            if(correctionAngle != 0){
+                PIDCalculationSpline(power1,power2);
+                rotateRobotWithPID(checkDirection());
+            } else PIDMovementSpline(power1,power2);
 
-            powerBack = Math.sin(angle - (Math.PI/4)) * speed;
-            powerFront = Math.sin(angle + (Math.PI / 4)) * speed;
+
+            power1 = Math.sin(angle + (Math.PI / 4)) * speed;
+            power2 = Math.sin(angle - (Math.PI / 4)) * speed;
+
         } while(leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy());
 
        stopping.driveStop();
@@ -276,7 +280,6 @@ public class driveComponents {
         grade = angles;
         return globalAngle;
     }
-
     private double checkDirection() {
         double corectie, unghi, unghi_corectie = .10;
 
@@ -427,7 +430,7 @@ public class driveComponents {
         v3LastError = v3Error;
         v4LastError = v4Error;
     }
-    public void PIDCalculation(double speed){
+    private void PIDCalculation(double speed){
         pidTimer.reset();
         final double v1TargetVelocity = setMotorPower(speed);
         final double v2TargetVelocity = setMotorPower(speed);
@@ -485,14 +488,155 @@ public class driveComponents {
         v4LastError = v4Error;
     }
 
+
+    private void PIDMovementSpline(double power1,double power2){
+        pidTimer.reset();
+        final double v1TargetVelocity = setMotorPower(power1);
+        final double v4TargetVelocity = setMotorPower(power1);
+
+        final double v2TargetVelocity = setMotorPower(power2);
+        final double v3TargetVelocity = setMotorPower(power2);
+
+
+        double v1CurrentVelocity = leftFront.getVelocity();
+        double v4CurrentVelocity = rightRear.getVelocity();
+
+        double v2CurrentVelocity = rightFront.getVelocity();
+        double v3CurrentVelocity = leftRear.getVelocity();
+
+
+        double v1Error = getError(v1TargetVelocity,v1CurrentVelocity);
+        double v4Error = getError(v4TargetVelocity,v4CurrentVelocity);
+
+        double v2Error = getError(v2TargetVelocity,v2CurrentVelocity);
+        double v3Error = getError(v3TargetVelocity,v3CurrentVelocity);
+
+
+        v1IntegralPower += v1Error * pidTimer.time();
+        v4IntegralPower += v4Error * pidTimer.time();
+
+        v2IntegralPower += v2Error * pidTimer.time();
+        v3IntegralPower += v3Error * pidTimer.time();
+
+
+        double v1deltaError = v1Error - v1LastError;
+        double v4deltaError = v4Error - v4LastError;
+
+        double v2deltaError = v2Error - v2LastError;
+        double v3deltaError = v3Error - v3LastError;
+
+
+        double v1Derivative = v1deltaError / pidTimer.time();
+        double v4Derivative = v4deltaError / pidTimer.time();
+
+        double v2Derivative = v2deltaError / pidTimer.time();
+        double v3Derivative = v3deltaError / pidTimer.time();
+
+
+        v1pidGains.p = pidCoefficients.p * v1Error;
+        v4pidGains.p = pidCoefficients.p * v4Error;
+
+        v2pidGains.p = pidCoefficients.p * v2Error;
+        v3pidGains.p = pidCoefficients.p * v3Error;
+
+
+        v1pidGains.i = pidCoefficients.i * v1IntegralPower;
+        v4pidGains.i = pidCoefficients.i * v4IntegralPower;
+
+        v2pidGains.i = pidCoefficients.i * v2IntegralPower;
+        v3pidGains.i = pidCoefficients.i * v3IntegralPower;
+
+
+        v1pidGains.d = pidCoefficients.d * v1Derivative;
+        v4pidGains.d = pidCoefficients.d * v4Derivative;
+
+        v2pidGains.d = pidCoefficients.d * v2Derivative;
+        v3pidGains.d = pidCoefficients.d * v3Derivative;
+
+
+        v1Power = v1pidGains.p + v1pidGains.i + v1pidGains.d + v1TargetVelocity;
+        v4Power = v4pidGains.p + v4pidGains.i + v4pidGains.d + v4TargetVelocity;
+
+        v2Power = v2pidGains.p + v2pidGains.i + v2pidGains.d + v2TargetVelocity;
+        v3Power = v3pidGains.p + v3pidGains.i + v3pidGains.d + v3TargetVelocity;
+
+
+        v1LastError = v1Error;
+        v4LastError = v4Error;
+
+
+        v2LastError = v2Error;
+        v3LastError = v3Error;
+
+    }
+    private void PIDCalculationSpline(double power1,double power2){
+        pidTimer.reset();
+        final double v1TargetVelocity = setMotorPower(power1);
+        final double v4TargetVelocity = setMotorPower(power1);
+
+        final double v2TargetVelocity = setMotorPower(power2);
+        final double v3TargetVelocity = setMotorPower(power2);
+
+
+        double v1CurrentVelocity = leftFront.getVelocity();
+        double v2CurrentVelocity = rightFront.getVelocity();
+        double v3CurrentVelocity = leftRear.getVelocity();
+        double v4CurrentVelocity = rightRear.getVelocity();
+
+        double v1Error = getError(v1TargetVelocity,v1CurrentVelocity);
+        double v2Error = getError(v2TargetVelocity,v2CurrentVelocity);
+        double v3Error = getError(v3TargetVelocity,v3CurrentVelocity);
+        double v4Error = getError(v4TargetVelocity,v4CurrentVelocity);
+
+        v1IntegralPower += v1Error * pidTimer.time();
+        v2IntegralPower += v2Error * pidTimer.time();
+        v3IntegralPower += v3Error * pidTimer.time();
+        v4IntegralPower += v4Error * pidTimer.time();
+
+        double v1deltaError = v1Error - v1LastError;
+        double v2deltaError = v1Error - v2LastError;
+        double v3deltaError = v1Error - v3LastError;
+        double v4deltaError = v1Error - v4LastError;
+
+        double v1Derivative = v1deltaError / pidTimer.time();
+        double v2Derivative = v2deltaError / pidTimer.time();
+        double v3Derivative = v3deltaError / pidTimer.time();
+        double v4Derivative = v4deltaError / pidTimer.time();
+
+        v1pidGains.p = pidCoefficients.p * v1Error;
+        v2pidGains.p = pidCoefficients.p * v2Error;
+        v3pidGains.p = pidCoefficients.p * v3Error;
+        v4pidGains.p = pidCoefficients.p * v4Error;
+
+        v1pidGains.i = pidCoefficients.i * v1IntegralPower;
+        v2pidGains.i = pidCoefficients.i * v2IntegralPower;
+        v3pidGains.i = pidCoefficients.i * v3IntegralPower;
+        v4pidGains.i = pidCoefficients.i * v4IntegralPower;
+
+        v1pidGains.d = pidCoefficients.d * v1Derivative;
+        v2pidGains.d = pidCoefficients.d * v2Derivative;
+        v3pidGains.d = pidCoefficients.d * v3Derivative;
+        v4pidGains.d = pidCoefficients.d * v4Derivative;
+
+        v1Power = v1pidGains.p + v1pidGains.i + v1pidGains.d + v1TargetVelocity;
+        v2Power = v2pidGains.p + v2pidGains.i + v2pidGains.d + v2TargetVelocity;
+        v3Power = v3pidGains.p + v3pidGains.i + v3pidGains.d + v3TargetVelocity;
+        v4Power = v4pidGains.p + v4pidGains.i + v4pidGains.d + v4TargetVelocity;
+
+        v1LastError = v1Error;
+        v2LastError = v2Error;
+        v3LastError = v3Error;
+        v4LastError = v4Error;
+    }
+
     /**
      * Helper functions
      * */
-    public double setMotorPower(double power){
+    private double setMotorPower(double power){
         return power * COUNTS_PER_MOTOR_REV;
     }
 
-    public void setRobotMotorsPower(double speed){
+    private void setRobotMotorsPower(double speed){
         leftFront.setVelocity(setMotorPower(speed));
         rightFront.setVelocity(setMotorPower(speed));
         leftRear.setVelocity(setMotorPower(speed));

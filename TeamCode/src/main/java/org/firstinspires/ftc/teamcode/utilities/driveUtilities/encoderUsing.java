@@ -83,14 +83,6 @@ public class encoderUsing {
         rightfront.setTargetPosition(-position);
         rightrear.setTargetPosition(position);
     }
-    public void splineSetTargetPosition1(int Position){
-        rightfront.setTargetPosition(Position);
-        leftrear.setTargetPosition(Position);
-    }
-    public void splineSetTargetPostion2(int Position){
-        leftfront.setTargetPosition(Position);
-        rightrear.setTargetPosition(Position);
-    }
 
 
 }

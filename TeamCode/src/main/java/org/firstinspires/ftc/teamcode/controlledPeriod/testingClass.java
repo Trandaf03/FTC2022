@@ -11,13 +11,13 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 
-/**
+/** TODO Test this
  * Testing class.
  **/
 
 @TeleOp(name = "testeGyro" )
 
-public class imutesting extends LinearOpMode {
+public class testingClass extends LinearOpMode {
 
 
     driveComponents drive = new driveComponents();
@@ -29,7 +29,18 @@ public class imutesting extends LinearOpMode {
 
         waitForStart();
         if(opModeIsActive());
+        // rotatie
+        drive.rotateRobot(90,1);  // no corection
 
-        drive.moveRobot(150,0,1);
+        // fata / spate
+        drive.xMovement(100,1); // PID Correction
+        // stanga / dreapta
+        drive.yMovement(100,1); // PID Correction
+
+
+        drive.xMovementWithPIDandGyroCorection(100,1); // PID Correction + gyro
+        // spline
+        drive.spline(100,100,1);  // PID Correction + Gyro
+
     }
 }
