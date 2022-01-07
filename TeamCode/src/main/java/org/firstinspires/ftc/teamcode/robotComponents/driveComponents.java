@@ -135,7 +135,7 @@ public class driveComponents {
     /**
      * Main function for moving the robot in the Autonomous period
      * */
-    public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
+    /*public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
         // Forward / Reverse movement
         if(nextX != 0 && nextY == 0){
             if(nextX > 0){
@@ -158,11 +158,11 @@ public class driveComponents {
         if(nextX != 0 && nextY != 0){
             moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
         }
-    }
+    }*/
     /**
      * Secondary function for moving the robot in the Autonomous Period, used to call the function that is needed to be called, (OPTIONAL)
      * */
-    private void moveToPosition(ROBOT_MOVEMENT movement_direction, double xDistance, double yDistance, double speed) throws InterruptedException {
+    /*private void moveToPosition(ROBOT_MOVEMENT movement_direction, double xDistance, double yDistance, double speed) throws InterruptedException {
         switch (movement_direction){
             case FORWARD_DIR:
                 xMovement(-xDistance,speed);
@@ -186,7 +186,7 @@ public class driveComponents {
             default:
                 break;
         }
-    }
+    }*/
 
     /**
      * Functions used to move the robot in the Autonomous period
@@ -227,130 +227,57 @@ public class driveComponents {
         setMotorsDisabled();
 
     }
-    private void spline(double xDistance, double yDistance, double speed) throws InterruptedException {
-        if(xDistance > 0 && yDistance > 0){
-            splineToFrontRight(xDistance,yDistance,speed);
-        }
-        if(xDistance > 0 && yDistance < 0){
-            splineToFrontLeft(xDistance,yDistance,speed);
-        }
-        if(xDistance < 0 && yDistance > 0){
-            splineToBackRight(xDistance,yDistance,speed);
-        }
-        if(xDistance < 0 && yDistance < 0){
-            splinetoBackLeft(xDistance,yDistance,speed);
-        }
 
-    }
-    private void splineToFrontRight(double xDistance, double yDistance, double speed) throws InterruptedException{
-        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
-        // leftfront and backright;
+
+    private void spline(double distance, double angle, double speed) throws InterruptedException{
+        //double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
+
+
         Thread.sleep(100);
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         Thread.sleep(100);
         leftFront.setTargetPosition(-(int)distance);
         rightRear.setTargetPosition(-(int)distance);
+        rightFront.setTargetPosition(-(int)distance);
+        leftRear.setTargetPosition(-(int)distance);
 
         leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        leftFront.setPower(speed);
-        rightRear.setPower(speed);
+        leftFront.setPower(Math.sin(angle + (Math.PI/4)) * speed);
+        rightRear.setPower(Math.sin(angle - (Math.PI/4)) * speed);
 
-        while (leftFront.isBusy() && rightRear.isBusy()){
-            leftFront.setPower(speed);
-            rightRear.setPower(speed);
+        rightFront.setPower(Math.sin(angle - (Math.PI/4)) * speed);
+        leftRear.setPower(Math.sin(angle + (Math.PI/4)) * speed);;
+
+        while (leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy()){
+            leftFront.setPower(Math.sin(angle + (Math.PI/4)) * speed);
+            rightRear.setPower(Math.sin(angle - (Math.PI/4)) * speed);
+
+
+            rightFront.setPower(Math.sin(angle - (Math.PI/4)) * speed);
+            leftRear.setPower(Math.sin(angle + (Math.PI/4)) * speed);
         }
 
         leftFront.setPower(0);
         rightRear.setPower(0);
-
-    }
-    private void splineToFrontLeft(double xDistance, double yDistance, double speed) throws InterruptedException{
-        // frontright and leftback;
-        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
-        Thread.sleep(100);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        Thread.sleep(100);
-        leftRear.setTargetPosition((int)distance);
-        rightFront.setTargetPosition((int)distance);
-
-        leftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-        leftRear.setPower(speed);
-        rightFront.setPower(speed);
-
-        while (leftRear.isBusy() && rightFront.isBusy()){
-
-        }
-
-        leftRear.setPower(0);
         rightFront.setPower(0);
-    }
-    private void splineToBackRight(double xDistance, double yDistance, double speed) throws InterruptedException {
-        spline(-xDistance,-yDistance,speed);
-    }
-    private void splinetoBackLeft(double xDistance, double yDistance, double speed) throws InterruptedException {
-        splineToFrontRight(-xDistance,-yDistance,speed);
-    }
-    public void testSpline(double xDistance, double yDistance, double speed){
-        setMotorsEnabled();
-
-
-        xDistance = xDistance * COUNTS_PER_CM;
-        yDistance = yDistance * COUNTS_PER_CM;
-        double XYHypot = Math.hypot(xDistance,yDistance);
-        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
-        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
-
-        //encoders.setTargetPositionXmovement((int)distance);
-        encoders.splineSetTargetPosition1((int)yDistance);
-        encoders.splineSetTargetPostion2((int)xDistance);
-        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
-
-        //setRobotMotorsPower(speed);
-        //yMovement
-        //leftRear.setPower(1);
-        //rightFront.setPower(1);
-        //xMovement
-        //leftFront.setPower(1);
-        //rightRear.setPower(1);
-        double robotXCurrentPosition = (leftFront.getCurrentPosition() + rightFront.getCurrentPosition())/2;
-        double robotYCurrentPosition = (leftRear.getCurrentPosition() + rightFront.getCurrentPosition())/2;
-        double currentXYHyport = Math.hypot(robotXCurrentPosition,robotYCurrentPosition);
-
-        do{
-            leftRear.setPower(Math.abs(1-valueTo1(currentXYHyport,0,XYHypot,0,1)));
-            rightFront.setPower(Math.abs(1-valueTo1(currentXYHyport,0,XYHypot,0,1)));
-
-            leftFront.setPower(Math.abs(valueTo1(currentXYHyport,0,XYHypot,0,1)));
-            rightRear.setPower(-Math.abs(valueTo1(currentXYHyport,0,XYHypot,0,1)));
-
-            robotXCurrentPosition = (leftFront.getCurrentPosition() + rightFront.getCurrentPosition())/2;
-            robotYCurrentPosition = (leftRear.getCurrentPosition() + rightFront.getCurrentPosition())/2;
-            currentXYHyport = Math.hypot(robotXCurrentPosition,robotYCurrentPosition);
-
-        }while(currentXYHyport < XYHypot);
-
-       setMotorsDisabled();
+        leftRear.setPower(0);
 
     }
-
-
-
 
 
     /**
