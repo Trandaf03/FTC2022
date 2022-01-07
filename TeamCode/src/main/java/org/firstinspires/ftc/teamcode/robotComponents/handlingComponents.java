@@ -5,6 +5,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+/**
+ *
+ * Class used to declare and use every component that is used for moving the freight from the collector to destination
+ *
+ * */
+
 public class handlingComponents {
 
     private DcMotor sliderMotor = null;
@@ -32,6 +38,9 @@ public class handlingComponents {
         return rotationServo;
     }
 
+    /**
+     * Initialization
+     * */
     public void initHandlingComponents(HardwareMap map){
         sliderMotor = map.get(DcMotor.class,"slider");
         rotationServo = map.get(Servo.class,"rotationServo");
@@ -41,6 +50,11 @@ public class handlingComponents {
         sliderMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
     }
+
+
+    /**
+     * Main function for moving the pulley
+     * */
     public void sliderGoToPosition(REMOVING_POSITIONS position){
         sliderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         sliderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -48,7 +62,13 @@ public class handlingComponents {
         sliderMotor.setPower(0.25);
     }
 
-    // TODO Set correct servo positions
+    /**
+     * TODO Set correct servo positions
+     *
+     * Main function for moving the servo
+     *
+     * !! Postions are correct at this moment
+     * */
     public void setServoPosition(COLLECTING_POSITIONS position){
         if(position == COLLECTING_POSITIONS.SERVO_DOWN_POS){
             rotationServo.setPosition(0.12);
@@ -61,7 +81,14 @@ public class handlingComponents {
         }
     }
 
-    //TODO Set correct distance for the motor to run
+    /**
+     * TODO Set correct distance for the motor to run
+     *
+     * Secondary function for moving the pulley, it need to be tuned with the correct distances
+     * for the pulley to move, where
+     * LOW_POS,MID_POS and HIGH_POS are the 3 variables where the pulley needs to go
+     *
+     * */
     private int returnPositionTicks(REMOVING_POSITIONS position){
         if(position == REMOVING_POSITIONS.LOW_POS){
             return (int) (10 * COUNTS_PER_CM);

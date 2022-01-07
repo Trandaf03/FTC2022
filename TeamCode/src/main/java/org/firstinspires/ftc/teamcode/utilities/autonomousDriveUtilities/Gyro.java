@@ -10,6 +10,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.Locale;
 
+/**
+ *
+ * Class used to declare and use the internal gyro from the control hub
+ *
+ * */
+
+
 public class Gyro {
 
     private BNO055IMU imuSensor;
@@ -33,9 +40,10 @@ public class Gyro {
         imuSensor.initialize(parameters);
     }
 
-
+    /**
+     * Main gyro functions, that return the direction of HEADING,ROLL or PITCH
+     * */
     public double returnAngle(ROBOT_GYRO_DIRECTION robotDirection){
-        // XYZ ROLL IS ACTUALLY THE HEADING                                                   ZXY
         robotOrientation = imuSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
 
         switch (robotDirection){
@@ -50,9 +58,7 @@ public class Gyro {
         }
     }
 
-    private double returnRobotHeading(){
-        return Double.parseDouble(formatAngle(robotOrientation.angleUnit, robotOrientation.firstAngle));
-    }
+
     private String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }

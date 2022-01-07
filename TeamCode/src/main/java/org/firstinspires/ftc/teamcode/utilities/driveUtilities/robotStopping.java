@@ -2,6 +2,13 @@ package org.firstinspires.ftc.teamcode.utilities.driveUtilities;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/**
+ *
+ * Class created to stop the robot components
+ *
+ * */
+
+
 public class robotStopping {
 
     public robotStopping(){

@@ -11,6 +11,9 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 
+/**
+ * Testing class.
+ * */
 
 @TeleOp(name = "testeGyro" )
 

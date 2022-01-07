@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.testingOpModes.lastYearCode;
-
+/*
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,8 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-@Disabled
-@Deprecated
 public class Drive {
     
     private DcMotor stangaFata = null;
@@ -76,3 +74,4 @@ public class Drive {
 
     
 }
+*/

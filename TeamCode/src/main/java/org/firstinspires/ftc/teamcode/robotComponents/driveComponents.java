@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robotComponents;
 
+import static org.firstinspires.ftc.teamcode.robotComponents.handlingComponents.COUNTS_PER_MOTOR_REV;
 import static org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.robotInfo.COUNTS_PER_CM;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,20 +24,24 @@ public class driveComponents {
         FORWARD_DIR, REVERSE_DIR, LEFT_DIR, RIGHT_DIR, SPLINE_TO_DIR, ROTATE_LEFT, ROTATE_RIGHT;
     }
 
+    //Motor declaring
     private DcMotorEx leftFront = null;
     private DcMotorEx leftRear = null;
     private DcMotorEx rightFront = null;
     private DcMotorEx rightRear = null;
 
+    //Gyro declaring
     private Gyro gyro = new Gyro();
-    private robotInfo robot = new robotInfo();
 
+    //driveUtilities declaring
     powerBehavior motorBreaking = new powerBehavior();
     robotStopping stopping = new robotStopping();
     robotDirection robotDir = new robotDirection();
     encoderUsing encoders = new encoderUsing();
 
-    private static final double     COUNTS_PER_MOTOR_REV    = 386.3 ;
+    /**
+     * Robot PID initialization variables
+     * */
     private static PIDCoefficients pidCoefficients = new PIDCoefficients(0,0,0);
     private PIDCoefficients v1pidGains = new PIDCoefficients(0,0,0);
     private PIDCoefficients v2pidGains = new PIDCoefficients(0,0,0);
@@ -60,28 +65,41 @@ public class driveComponents {
 
     }
 
-
+    /**
+     * drive initialization function
+     * */
     public void driveInitialization(HardwareMap map,
                                     robotDirection.ROBOT_DIRECTIONS heading,
                                     powerBehavior.ROBOT_BREAKING breakingMode,
                                     encoderUsing.ENCODER_RUNNING_MODE encoderMode){
+        // hardware map linking
         leftFront = map.get(DcMotorEx.class, "leftFront");
         rightFront = map.get(DcMotorEx.class, "rightFront");
         leftRear = map.get(DcMotorEx.class, "leftRear");
         rightRear = map.get(DcMotorEx.class, "rightRear");
 
+        // gyro init
+        gyro.initGyro(map);
 
+        //initialization for every drive utilities
         robotDir.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         motorBreaking.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         encoders.setMotorsName(leftFront,leftRear,rightFront,rightRear);
 
+        //setting the heading,braking mode and the encoder mode
         robotDir.setRobotDirection(heading);
         motorBreaking.setBreakingMode(breakingMode);
         encoders.setEncoderMode(encoderMode);
 
+
+        // stopping the motors to be sure that they are stopped :)
         stopping.driveStop(leftFront,leftRear,rightFront,rightRear);
     }
 
+
+    /**
+     * Main function used in the Controlled Period for moving the robot
+     * */
     public void robotVelocityController(double left_stick_x, double left_stick_y, double right_stick_x){
         double r = Math.hypot(left_stick_x, -left_stick_y);
         double robotAngle = Math.atan2(left_stick_y, -left_stick_x) - Math.PI / 4;
@@ -99,16 +117,11 @@ public class driveComponents {
     }
 
 
-    public void stop(){
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftRear.setPower(0);
-        rightRear.setPower(0);
-    }
+    /**
+     * Main function for moving the robot in the Autonomous period
+     * */
     public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
-
-        //startHeading = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
-
+        // Forward / Reverse movement
         if(nextX != 0 && nextY == 0){
             if(nextX > 0){
                 moveToPosition(ROBOT_MOVEMENT.FORWARD_DIR,nextX,nextY,speed);
@@ -116,6 +129,7 @@ public class driveComponents {
                 moveToPosition(ROBOT_MOVEMENT.REVERSE_DIR,nextX,nextY,speed);
             }
         }
+        // Left / Right movement
         if(nextX == 0 && nextY != 0){
             nextX *= 1.67;
             nextY *= 1.67;
@@ -125,10 +139,14 @@ public class driveComponents {
                 moveToPosition(ROBOT_MOVEMENT.LEFT_DIR,nextX,nextY,speed);
             }
         }
-        //if(nextX != 0 && nextY != 0){
-            //moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
-        //}
+        // Diagonal movement
+        if(nextX != 0 && nextY != 0){
+            moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
+        }
     }
+    /**
+     * Secondary function for moving the robot in the Autonomous Period, used to call the function that is needed to be called, (OPTIONAL)
+     * */
     private void moveToPosition(ROBOT_MOVEMENT movement_direction, double xDistance, double yDistance, double speed) throws InterruptedException {
         switch (movement_direction){
             case FORWARD_DIR:
@@ -152,9 +170,11 @@ public class driveComponents {
                 break;
             default:
                 break;
-
         }
     }
+    /**
+     * Functions used to move the robot in the Autonomous period
+     * */
     private void xMovement(double distance, double speed) throws InterruptedException {
         setMotorsEnabled();
 
@@ -314,6 +334,12 @@ public class driveComponents {
 
     }
 
+
+
+
+    /**
+     * PID correction for the motors
+     * */
     private void PIDmovement(double speed){
 
         pidTimer.reset();
@@ -373,9 +399,14 @@ public class driveComponents {
         v4LastError = v4Error;
     }
 
+
+    /**
+     * Helper functions
+     * */
     public double setMotorPower(double power){
         return power * COUNTS_PER_MOTOR_REV;
     }
+
     public void setRobotMotorsPower(double speed){
         leftFront.setVelocity(setMotorPower(speed));
         rightFront.setVelocity(setMotorPower(speed));

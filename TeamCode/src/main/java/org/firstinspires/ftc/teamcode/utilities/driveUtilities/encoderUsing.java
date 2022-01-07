@@ -2,14 +2,21 @@ package org.firstinspires.ftc.teamcode.utilities.driveUtilities;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/**
+ *
+ * Class created to facilitate the programming of robot drive encoders
+ *
+ * */
 
 public class encoderUsing {
 
+    //The 4 robot drive motors
     private DcMotor a = null;
     private DcMotor b = null;
     private DcMotor c = null;
     private DcMotor d = null;
 
+    //Encoder modes
     public enum ENCODER_RUNNING_MODE {
         STOP_AND_RESET, RUN_USING, RUN_WITHOUT, TO_POSITION;
     }
@@ -17,13 +24,17 @@ public class encoderUsing {
     public encoderUsing(){
 
     }
-
+    // initialization for the motors declared here
     public void setMotorsName(DcMotor leftFront, DcMotor leftRear, DcMotor rightFront, DcMotor rightRear){
         a = leftFront;
         b = leftRear;
         c = rightFront;
         d = rightRear;
     }
+
+    /**
+     * Main function used for setting the encoders mode
+     * */
     public void setEncoderMode(ENCODER_RUNNING_MODE encoderMode){
         switch (encoderMode){
             case STOP_AND_RESET:
@@ -55,6 +66,10 @@ public class encoderUsing {
 
         }
     }
+
+    /**
+     * Functions used to set the target position of the robot, used in Autonomous period
+     * */
     public void setTargetPositionXmovement(int position){
         a.setTargetPosition(position);
         b.setTargetPosition(position);

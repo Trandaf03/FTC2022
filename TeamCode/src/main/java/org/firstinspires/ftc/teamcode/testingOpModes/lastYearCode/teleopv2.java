@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.testingOpModes.lastYearCode;
-
+/*
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.testingOpModes.lastYearCode.Drive;
 
-@Disabled
-@Deprecated
 @TeleOp(name = "gkfkodnfjdfndjfdjfd")
 public class teleopv2 extends LinearOpMode {
 
@@ -46,3 +44,4 @@ public class teleopv2 extends LinearOpMode {
 
     }
 }
+*/
