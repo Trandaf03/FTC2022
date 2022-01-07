@@ -68,7 +68,7 @@ public class handlingComponents {
      * Main function for moving the servo
      *
      * !! Postions are correct at this moment
-     * */
+     **/
     public void setServoPosition(COLLECTING_POSITIONS position){
         if(position == COLLECTING_POSITIONS.SERVO_DOWN_POS){
             rotationServo.setPosition(0.12);

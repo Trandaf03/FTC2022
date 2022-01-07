@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *
  * Class created to stop the robot components
  *
- * */
+ **/
 
 
 public class robotStopping {

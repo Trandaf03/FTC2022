@@ -35,7 +35,7 @@ public class robotDirection {
 
     /**
      * Main function used for setting the direction
-     * */
+     **/
     public void setRobotDirection(ROBOT_DIRECTIONS direction){
         switch (direction){
             case FORWARD:

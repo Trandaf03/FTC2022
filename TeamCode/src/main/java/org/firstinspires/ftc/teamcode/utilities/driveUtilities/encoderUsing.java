@@ -69,7 +69,7 @@ public class encoderUsing {
 
     /**
      * Functions used to set the target position of the robot, used in Autonomous period
-     * */
+     **/
     public void setTargetPositionXmovement(int position){
         a.setTargetPosition(position);
         b.setTargetPosition(position);

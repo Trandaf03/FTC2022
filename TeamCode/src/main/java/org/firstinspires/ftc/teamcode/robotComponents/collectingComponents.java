@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  *
  * Class used to declare and use every component that is used for collecting freight
  *
- * */
+ **/
 
 
 public class collectingComponents {

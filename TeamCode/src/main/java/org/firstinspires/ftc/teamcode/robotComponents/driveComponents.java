@@ -41,7 +41,7 @@ public class driveComponents {
 
     /**
      * Robot PID initialization variables
-     * */
+     **/
     private static PIDCoefficients pidCoefficients = new PIDCoefficients(0,0,0);
     private PIDCoefficients v1pidGains = new PIDCoefficients(0,0,0);
     private PIDCoefficients v2pidGains = new PIDCoefficients(0,0,0);

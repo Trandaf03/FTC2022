@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  *
  * Class used to declare and use every component that is used in moving the ducky
  *
- * */
+ **/
 
 public class duckRotation {
 

@@ -14,7 +14,7 @@ import java.util.Locale;
  *
  * Class used to declare and use the internal gyro from the control hub
  *
- * */
+ **/
 
 
 public class Gyro {

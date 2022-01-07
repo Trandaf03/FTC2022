@@ -8,7 +8,7 @@ public class robotInfo {
      *
      * Class used to store all the important robot variables
      *
-     * */
+     **/
 
 
     private static final double     COUNTS_PER_MOTOR_REV    = 386.3 ;

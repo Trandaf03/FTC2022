@@ -19,6 +19,6 @@ public class hardwareMapIDs {
      * 2 - DUCKY
      *
      * !!Currently they are sett correctly
-     * */
+     **/
 
 }

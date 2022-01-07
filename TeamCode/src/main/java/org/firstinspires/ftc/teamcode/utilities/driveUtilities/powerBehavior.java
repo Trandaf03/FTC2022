@@ -37,7 +37,7 @@ public class powerBehavior {
     }
     /**
      * Main function used for setting the power behavior
-     * */
+     **/
     public void setBreakingMode(ROBOT_BREAKING breakingMode){
         switch (breakingMode){
             case BRAKE:
