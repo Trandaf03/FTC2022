@@ -9,13 +9,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.robotInfo;
 import org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.Gyro;
 
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotStopping;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class driveComponents {
 
@@ -59,10 +61,23 @@ public class driveComponents {
     private double v3LastError = 0;
     private double v4LastError = 0;
 
-    public double startHeading = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
+
+    private double globalAngle = 0;
+    private double grade;
+
+    private List<PIDCoefficients> pidCoef;
+    private List<Double> integralPower;
+    private List<Double> lastError;
+
+    private List<Double> motorPowers;
+    private double v1Power,v2Power,v3Power,v4Power;
 
     public driveComponents(){
+        motorPowers = Arrays.asList(v1Power,v2Power,v3Power,v4Power);
 
+        /*for(Double x : motorPowers){
+            x++;
+        }*/
     }
 
     /**
@@ -85,7 +100,7 @@ public class driveComponents {
         robotDir.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         motorBreaking.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         encoders.setMotorsName(leftFront,leftRear,rightFront,rightRear);
-
+        stopping.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         //setting the heading,braking mode and the encoder mode
         robotDir.setRobotDirection(heading);
         motorBreaking.setBreakingMode(breakingMode);
@@ -93,7 +108,7 @@ public class driveComponents {
 
 
         // stopping the motors to be sure that they are stopped :)
-        stopping.driveStop(leftFront,leftRear,rightFront,rightRear);
+        stopping.driveStop();
     }
 
 
@@ -172,6 +187,7 @@ public class driveComponents {
                 break;
         }
     }
+
     /**
      * Functions used to move the robot in the Autonomous period
      * */
@@ -290,7 +306,6 @@ public class driveComponents {
     private void splinetoBackLeft(double xDistance, double yDistance, double speed) throws InterruptedException {
         splineToFrontRight(-xDistance,-yDistance,speed);
     }
-
     public void testSpline(double xDistance, double yDistance, double speed){
         setMotorsEnabled();
 
@@ -337,6 +352,113 @@ public class driveComponents {
 
 
 
+
+    /**
+     * Robot rotation functions
+     * */
+    private void resetAngle() {
+        grade = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
+        globalAngle = 0;
+    }
+    private double getAngle() {
+
+        double angles = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
+
+        double rotationAngle = angles - grade;
+        if (rotationAngle < -180)
+            rotationAngle += 360;
+        else if (rotationAngle > 180)
+            rotationAngle -= 360;
+        globalAngle += rotationAngle;
+        grade = angles;
+        return globalAngle;
+    }
+
+    private double checkDirection() {
+        double corectie, unghi, unghi_corectie = .10;
+
+        unghi = getAngle();
+
+        if (unghi == 0)
+            corectie = 0;
+        else
+            corectie = -unghi;
+
+        corectie = corectie * unghi_corectie;
+        return corectie;
+    }
+    private void rotateRobot(double degrees, double power) {
+
+        double  lp, rp;
+        resetAngle();
+
+        if (degrees < 0)
+        {   // left rotation
+            lp = -power;
+            rp = power;
+        }
+        else if (degrees > 0)
+        {   // right rotation
+            lp = power;
+            rp = -power;
+        }
+        else return;
+
+        leftFront.setPower(lp);
+        leftRear.setPower(lp);
+        rightRear.setPower(rp);
+        rightFront.setPower(rp);
+
+        if (degrees < 0)
+            while (getAngle() > degrees) {}
+        else
+            while (getAngle() < degrees) {}
+
+        stopping.driveStop();
+        resetAngle();
+    }
+    private void rotateRobotWithPID(double angle){
+        double  lp, rp;
+        if(angle < 0){
+            lp = -setMotorPower(0.1);
+            rp = setMotorPower(0.1);
+        } else if(angle > 0){
+            lp = setMotorPower(0.1);
+            rp = -setMotorPower(0.1);
+        } else return;
+
+        leftFront.setVelocity(v1Power + lp);
+        rightFront.setVelocity(v2Power + rp);
+        leftRear.setVelocity(v3Power + lp);
+        rightRear.setVelocity(v4Power + rp);
+    }
+
+
+    public void xMovementWithPIDandGyroCorection(double distance, double speed){
+        setMotorsEnabled();
+
+        distance *= COUNTS_PER_CM;
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+
+        encoders.setTargetPositionXmovement((int)distance);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
+
+        setRobotMotorsPower(speed);
+
+        double correctionAngle;
+        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
+            PIDmovement(setMotorPower(speed));
+            correctionAngle = checkDirection();
+            if(correctionAngle != 0){
+               PIDCalculation(setMotorPower(speed));
+               rotateRobotWithPID(checkDirection());
+            } else PIDmovement(setMotorPower(speed));
+        }
+
+        setMotorsDisabled();
+    }
+
+
     /**
      * PID correction for the motors
      * */
@@ -353,10 +475,10 @@ public class driveComponents {
         double v3CurrentVelocity = leftRear.getVelocity();
         double v4CurrentVelocity = rightRear.getVelocity();
 
-        double v1Error = v1TargetVelocity - v1CurrentVelocity;
-        double v2Error = v1TargetVelocity - v2CurrentVelocity;
-        double v3Error = v1TargetVelocity - v3CurrentVelocity;
-        double v4Error = v1TargetVelocity - v4CurrentVelocity;
+        double v1Error = getError(v1TargetVelocity,v1CurrentVelocity);
+        double v2Error = getError(v2TargetVelocity,v2CurrentVelocity);
+        double v3Error = getError(v3TargetVelocity,v3CurrentVelocity);
+        double v4Error = getError(v4TargetVelocity,v4CurrentVelocity);
 
         v1IntegralPower += v1Error * pidTimer.time();
         v2IntegralPower += v2Error * pidTimer.time();
@@ -388,17 +510,78 @@ public class driveComponents {
         v3pidGains.d = pidCoefficients.d * v3Derivative;
         v4pidGains.d = pidCoefficients.d * v4Derivative;
 
-        leftFront.setVelocity(v1pidGains.p + v1pidGains.i + v1pidGains.d + v1TargetVelocity);
-        rightFront.setVelocity(v2pidGains.p + v2pidGains.i + v2pidGains.d + v2TargetVelocity);
-        leftRear.setVelocity(v3pidGains.p + v3pidGains.i + v3pidGains.d + v3TargetVelocity);
-        rightRear.setVelocity(v4pidGains.p + v4pidGains.i + v4pidGains.d + v4TargetVelocity);
+        v1Power = v1pidGains.p + v1pidGains.i + v1pidGains.d + v1TargetVelocity;
+        v2Power = v2pidGains.p + v2pidGains.i + v2pidGains.d + v2TargetVelocity;
+        v3Power = v3pidGains.p + v3pidGains.i + v3pidGains.d + v3TargetVelocity;
+        v4Power = v4pidGains.p + v4pidGains.i + v4pidGains.d + v4TargetVelocity;
+
+        leftFront.setVelocity(v1Power);
+        rightFront.setVelocity(v2Power);
+        leftRear.setVelocity(v3Power);
+        rightRear.setVelocity(v4Power);
 
         v1LastError = v1Error;
         v2LastError = v2Error;
         v3LastError = v3Error;
         v4LastError = v4Error;
     }
+    public void PIDCalculation(double speed){
+        pidTimer.reset();
+        final double v1TargetVelocity = setMotorPower(speed);
+        final double v2TargetVelocity = setMotorPower(speed);
+        final double v3TargetVelocity = setMotorPower(speed);
+        final double v4TargetVelocity = setMotorPower(speed);
 
+        double v1CurrentVelocity = leftFront.getVelocity();
+        double v2CurrentVelocity = rightFront.getVelocity();
+        double v3CurrentVelocity = leftRear.getVelocity();
+        double v4CurrentVelocity = rightRear.getVelocity();
+
+        double v1Error = getError(v1TargetVelocity,v1CurrentVelocity);
+        double v2Error = getError(v2TargetVelocity,v2CurrentVelocity);
+        double v3Error = getError(v3TargetVelocity,v3CurrentVelocity);
+        double v4Error = getError(v4TargetVelocity,v4CurrentVelocity);
+
+        v1IntegralPower += v1Error * pidTimer.time();
+        v2IntegralPower += v2Error * pidTimer.time();
+        v3IntegralPower += v3Error * pidTimer.time();
+        v4IntegralPower += v4Error * pidTimer.time();
+
+        double v1deltaError = v1Error - v1LastError;
+        double v2deltaError = v1Error - v2LastError;
+        double v3deltaError = v1Error - v3LastError;
+        double v4deltaError = v1Error - v4LastError;
+
+        double v1Derivative = v1deltaError / pidTimer.time();
+        double v2Derivative = v2deltaError / pidTimer.time();
+        double v3Derivative = v3deltaError / pidTimer.time();
+        double v4Derivative = v4deltaError / pidTimer.time();
+
+        v1pidGains.p = pidCoefficients.p * v1Error;
+        v2pidGains.p = pidCoefficients.p * v2Error;
+        v3pidGains.p = pidCoefficients.p * v3Error;
+        v4pidGains.p = pidCoefficients.p * v4Error;
+
+        v1pidGains.i = pidCoefficients.i * v1IntegralPower;
+        v2pidGains.i = pidCoefficients.i * v2IntegralPower;
+        v3pidGains.i = pidCoefficients.i * v3IntegralPower;
+        v4pidGains.i = pidCoefficients.i * v4IntegralPower;
+
+        v1pidGains.d = pidCoefficients.d * v1Derivative;
+        v2pidGains.d = pidCoefficients.d * v2Derivative;
+        v3pidGains.d = pidCoefficients.d * v3Derivative;
+        v4pidGains.d = pidCoefficients.d * v4Derivative;
+
+        v1Power = v1pidGains.p + v1pidGains.i + v1pidGains.d + v1TargetVelocity;
+        v2Power = v2pidGains.p + v2pidGains.i + v2pidGains.d + v2TargetVelocity;
+        v3Power = v3pidGains.p + v3pidGains.i + v3pidGains.d + v3TargetVelocity;
+        v4Power = v4pidGains.p + v4pidGains.i + v4pidGains.d + v4TargetVelocity;
+
+        v1LastError = v1Error;
+        v2LastError = v2Error;
+        v3LastError = v3Error;
+        v4LastError = v4Error;
+    }
 
     /**
      * Helper functions
@@ -426,11 +609,11 @@ public class driveComponents {
         rightRear.setMotorDisable();
     }
 
-    double valueTo1(double x, double in_min, double in_max, double out_min, double out_max) {
+    private double valueTo1(double x, double in_min, double in_max, double out_min, double out_max) {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-
-
-
+    private double getError(double targetVelocity, double currentVelocity){
+        return  targetVelocity - currentVelocity;
+    }
 }
