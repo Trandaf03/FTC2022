@@ -32,7 +32,8 @@ public class testingClass extends LinearOpMode {
         waitForStart();
         if(opModeIsActive());
 
-        spline(248,124,1); // PID Correction
+        //spline(4*62,3*62,1); // PID Correction
+        drive.xMovementWithPIDandGyroCorection(122, 1);
         sleep(2000);
 
     }
@@ -40,9 +41,13 @@ public class testingClass extends LinearOpMode {
 
 
     public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
+        xDistance *= 1.1;
+        yDistance *= 1.5;
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
-        double angle = 2 * Math.PI - Math.atan2(yDistance,xDistance);
+        double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
+        double turn = Math.abs(90) ;
+
         drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
@@ -55,30 +60,25 @@ public class testingClass extends LinearOpMode {
         double power1 = drive.setMotorPower(Math.sin(angle + (Math.PI/4)) * speed);
         double power2 = drive.setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
-        drive.leftFront.setVelocity(power1);
-        drive.rightRear.setVelocity(power1);
 
-        drive.rightFront.setVelocity(power2);
-        drive.leftRear.setVelocity(power2);
 
         double correctionAngle;
         do {
-            correctionAngle = drive.checkDirection();
-            if(correctionAngle != 0){
-                drive.PIDCalculationSpline(power1,power2);
-                drive.rotateRobotWithPID(drive.checkDirection());
-            } else drive.PIDMovementSpline(power1,power2);
+//
+            drive.leftFront.setPower(Math.sin(angle + (Math.PI / 4)) * speed );
+            drive.rightRear.setPower(Math.sin(angle + (Math.PI / 4)) * speed );
+
+            drive.rightFront.setPower(Math.sin(angle - (Math.PI / 4)) * speed );
+            drive.leftRear.setPower(Math.sin(angle - (Math.PI / 4)) * speed) ;
+
 
             telemetry.addData("unghi", angle);
-            telemetry.addData("distance", distance);
+            telemetry.addData("distance", distance/COUNTS_PER_CM);
             telemetry.addData("power1",power1);
             telemetry.addData("power2",power2);
             telemetry.update();
 
-            power1 = drive.setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
-            power2 = drive.setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
-
-        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy());
+        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
 
         drive.leftFront.setVelocity(0);
         drive.rightRear.setVelocity(0);

@@ -43,13 +43,13 @@ public class powerBehavior {
         switch (breakingMode){
             case BRAKE:
                 leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                leftrear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 rightfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 rightrear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 break;
             case FLOAT:
                 leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                leftfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                leftrear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 rightfront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 rightrear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 break;
