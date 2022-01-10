@@ -33,14 +33,14 @@ public class testingClass extends LinearOpMode {
         drive.rotateRobot(90,1);  // no corection
 
         // fata / spate
-        drive.xMovement(100,1); // PID Correction
+       // drive.xMovement(100,1); // PID Correction
         // stanga / dreapta
-        drive.yMovement(100,1); // PID Correction
+       // drive.yMovement(100,1); // PID Correction
 
 
-        drive.xMovementWithPIDandGyroCorection(100,1); // PID Correction + gyro
+       // drive.xMovementWithPIDandGyroCorection(100,1); // PID Correction + gyro
         // spline
-        drive.spline(100,100,1);  // PID Correction + Gyro
+        //drive.spline(100,100,1);  // PID Correction + Gyro
 
     }
 }
