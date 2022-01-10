@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 
-/** TODO Test this
+/** TODO Test odometry
  * Testing class.
  **/
 
@@ -38,15 +38,30 @@ public class testingClass extends LinearOpMode {
 
     }
 
+    /**original teleop function
+     
+            double y = gamepad1.left_stick_y * ;
+            double x = gamepad1.left_stick_x * ;
+            double rx = -gamepad1.right_stick_x * ;
+
+            drive.stangaFata.setPower(y + x + rx);
+            drive.stangaSpate.setPower(y - x + rx);
+            drive.dreaptaFata.setPower(y - x - rx);
+            drive.dreaptaSpate.setPower(y + x - rx);
+     */
 
 
-    public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
+
+    public void spline(double xDistance, double yDistance, double speed, double turn) throws InterruptedException{
+
         xDistance *= 1.1;
         yDistance *= 1.5;
+
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
         double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
-        double turn = Math.abs(90) ;
+
+        double turn; // turn value [-1, 1]
 
         drive.setMotorsEnabled();
         Thread.sleep(100);
@@ -64,16 +79,15 @@ public class testingClass extends LinearOpMode {
 
         double correctionAngle;
         do {
-//
-            drive.leftFront.setPower(Math.sin(angle + (Math.PI / 4)) * speed );
-            drive.rightRear.setPower(Math.sin(angle + (Math.PI / 4)) * speed );
+            drive.leftFront.setPower(Math.sin(angle + (Math.PI / 4)) * speed + turn);
+            drive.rightRear.setPower(Math.sin(angle + (Math.PI / 4)) * speed + turn);
 
-            drive.rightFront.setPower(Math.sin(angle - (Math.PI / 4)) * speed );
-            drive.leftRear.setPower(Math.sin(angle - (Math.PI / 4)) * speed) ;
+            drive.rightFront.setPower(Math.sin(angle - (Math.PI / 4)) * speed + turn );
+            drive.leftRear.setPower(Math.sin(angle - (Math.PI / 4)) * speed + turn) ;
 
 
             telemetry.addData("unghi", angle);
-            telemetry.addData("distance", distance/COUNTS_PER_CM);
+            telemetry.addData("distance", distance / COUNTS_PER_CM);
             telemetry.addData("power1",power1);
             telemetry.addData("power2",power2);
             telemetry.update();
