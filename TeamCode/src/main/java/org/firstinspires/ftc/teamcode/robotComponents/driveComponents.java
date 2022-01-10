@@ -134,16 +134,18 @@ public class driveComponents {
         if(nextX != 0 && nextY == 0){
             nextX = nextX * 0.87;
                 xMovement(-nextX,-speed);
-        }
+        } else
         // Left / Right movement
         if(nextX == 0 && nextY != 0){
-
+            nextY = nextY*0.95;
             yMovement(-nextY,speed);
-        }
+        } else
         // Diagonal movement
-        /*if(nextX != 0 && nextY != 0){
-            //moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
-        }*/
+        if(nextX != 0 && nextY != 0){
+            nextX = nextX * 0.87;
+            nextY = nextY * 0.95;
+            spline(nextY, nextX, speed);
+        }
     }
     /**
      * Secondary function for moving the robot in the Autonomous Period, used to call the function that is needed to be called, (OPTIONAL)
@@ -203,6 +205,9 @@ public class driveComponents {
         double power1 = Math.sin(angle + (Math.PI / 4)) * speed;
         double power2 = Math.sin(angle - (Math.PI/4)) * speed;
 
+        power1 = setMotorPower(power1);
+        power2 = setMotorPower(power2);
+
         leftFront.setVelocity(power1);
         rightRear.setVelocity(power1);
 
@@ -218,8 +223,8 @@ public class driveComponents {
             } else PIDMovementSpline(power1,power2);
 
 
-            power1 = Math.sin(angle + (Math.PI / 4)) * speed;
-            power2 = Math.sin(angle - (Math.PI / 4)) * speed;
+            power1 = power1;
+            power2 = power2;
 
         } while(leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy());
 
@@ -602,7 +607,7 @@ public class driveComponents {
      * Helper functions
      * */
     private double setMotorPower(double power){
-        return power * COUNTS_PER_MOTOR_REV;
+        return power * 435 * 1/2 * 2 * Math.PI / 60;
     }
 
     private void setRobotMotorsPower(double speed){

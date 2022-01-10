@@ -32,7 +32,7 @@ public class testingClass extends LinearOpMode {
         // rotatie
 
         // fata / spate
-        drive.moveRobot(0,75,0.5); // PID Correction
+        drive.moveRobot(62*4,62*2,0.5); // PID Correction
         sleep(2000);
         //drive.moveRobot(-100,0,1);
         // stanga / dreapta
