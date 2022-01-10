@@ -200,10 +200,10 @@ public class driveComponents {
 
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
-        double power1 = Math.sin(angle + (Math.PI / 4)) * speed;
-        double power2 = Math.sin(angle - (Math.PI/4)) * speed;
+        double power1 = setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
+        double power2 = setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
-        leftFront.setVelocity(power1);
+        leftFront.setPower(power1);
         rightRear.setVelocity(power1);
 
         rightFront.setVelocity(power2);
