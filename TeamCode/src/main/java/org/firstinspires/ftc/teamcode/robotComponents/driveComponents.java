@@ -134,20 +134,16 @@ public class driveComponents {
         if(nextX != 0 && nextY == 0){
             nextX = nextX * 0.87;
                 xMovement(-nextX,-speed);
-        }
+        } else
         // Left / Right movement
         if(nextX == 0 && nextY != 0){
             nextY = nextY*0.95;
             yMovement(-nextY,speed);
-        }
-        // Diagonal movement
-        if(nextX != 0 && nextY != 0){
+        } else{
+        // Diagonal movement{
             spline(nextX,nextY,speed);
         }
     }
-    /**
-     * Secondary function for moving the robot in the Autonomous Period, used to call the function that is needed to be called, (OPTIONAL)
-     * */
 
     /**
      * Functions used to move the robot in the Autonomous period
@@ -190,7 +186,8 @@ public class driveComponents {
     }
     public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
-        double angle = Math.atan2(xDistance,yDistance);
+
+        double angle = Math.toRadians(Math.atan2(xDistance,yDistance));//  Math.atan2(xDistance,yDistance);
         setMotorsEnabled();
         Thread.sleep(100);
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
@@ -200,8 +197,8 @@ public class driveComponents {
 
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
-        double power1 = Math.sin(angle + (Math.PI / 4)) * speed;
-        double power2 = Math.sin(angle - (Math.PI/4)) * speed;
+        double power1 = setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
+        double power2 = setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
         leftFront.setVelocity(power1);
         rightRear.setVelocity(power1);
@@ -211,15 +208,19 @@ public class driveComponents {
 
         double correctionAngle;
         do {
-            correctionAngle = checkDirection();
+           /* correctionAngle = checkDirection();
             if(correctionAngle != 0){
                 PIDCalculationSpline(power1,power2);
                 rotateRobotWithPID(checkDirection());
             } else PIDMovementSpline(power1,power2);
 
+*/          leftFront.setVelocity(power1);
+            rightRear.setVelocity(power1);
 
-            power1 = Math.sin(angle + (Math.PI / 4)) * speed;
-            power2 = Math.sin(angle - (Math.PI / 4)) * speed;
+            rightFront.setVelocity(power2);
+            leftRear.setVelocity(power2);
+            power1 = setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
+            power2 = setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
         } while(leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy());
 
