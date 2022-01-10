@@ -29,19 +29,19 @@ public class driveComponents {
     }
 
     //Motor declaring
-    private DcMotorEx leftFront = null;
-    private DcMotorEx leftRear = null;
-    private DcMotorEx rightFront = null;
-    private DcMotorEx rightRear = null;
+    public DcMotorEx leftFront = null;
+    public DcMotorEx leftRear = null;
+    public DcMotorEx rightFront = null;
+    public DcMotorEx rightRear = null;
 
     //Gyro declaring
     private Gyro gyro = new Gyro();
 
     //driveUtilities declaring
-    powerBehavior motorBreaking = new powerBehavior();
-    robotStopping stopping = new robotStopping();
-    robotDirection robotDir = new robotDirection();
-    encoderUsing encoders = new encoderUsing();
+    public powerBehavior motorBreaking = new powerBehavior();
+    public robotStopping stopping = new robotStopping();
+    public robotDirection robotDir = new robotDirection();
+    public encoderUsing encoders = new encoderUsing();
 
     /**
      * Robot PID initialization variables
@@ -187,7 +187,7 @@ public class driveComponents {
     public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
-        double angle = Math.toRadians(Math.atan2(xDistance,yDistance));//  Math.atan2(xDistance,yDistance);
+        double angle = Math.toRadians(Math.atan2(xDistance,distance));
         setMotorsEnabled();
         Thread.sleep(100);
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
@@ -208,17 +208,13 @@ public class driveComponents {
 
         double correctionAngle;
         do {
-           /* correctionAngle = checkDirection();
+           correctionAngle = checkDirection();
             if(correctionAngle != 0){
                 PIDCalculationSpline(power1,power2);
                 rotateRobotWithPID(checkDirection());
             } else PIDMovementSpline(power1,power2);
 
-*/          leftFront.setVelocity(power1);
-            rightRear.setVelocity(power1);
 
-            rightFront.setVelocity(power2);
-            leftRear.setVelocity(power2);
             power1 = setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
             power2 = setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
@@ -233,11 +229,11 @@ public class driveComponents {
      * Robot rotation functions
      * */
 
-    private void resetAngle() {
+    public void resetAngle() {
         grade = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
         globalAngle = 0;
     }
-    private double getAngle() {
+    public double getAngle() {
 
         double angles = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
 
@@ -250,7 +246,7 @@ public class driveComponents {
         grade = angles;
         return globalAngle;
     }
-    private double checkDirection() {
+    public double checkDirection() {
         double corectie, unghi, unghi_corectie = .10;
 
         unghi = getAngle();
@@ -293,7 +289,7 @@ public class driveComponents {
         stopping.driveStop();
         resetAngle();
     }
-    private void rotateRobotWithPID(double angle){
+    public void rotateRobotWithPID(double angle){
         double  lp, rp;
         if(angle < 0){
             lp = -setMotorPower(0.1);
@@ -337,7 +333,7 @@ public class driveComponents {
     /**
      * PID correction for the motors
      * */
-    private void PIDmovement(double speed){
+    public void PIDmovement(double speed){
 
         pidTimer.reset();
         final double v1TargetVelocity = setMotorPower(speed);
@@ -400,7 +396,7 @@ public class driveComponents {
         v3LastError = v3Error;
         v4LastError = v4Error;
     }
-    private void PIDCalculation(double speed){
+    public void PIDCalculation(double speed){
         pidTimer.reset();
         final double v1TargetVelocity = setMotorPower(speed);
         final double v2TargetVelocity = setMotorPower(speed);
@@ -459,7 +455,7 @@ public class driveComponents {
     }
 
 
-    private void PIDMovementSpline(double power1,double power2){
+    public void PIDMovementSpline(double power1,double power2){
         pidTimer.reset();
         final double v1TargetVelocity = setMotorPower(power1);
         final double v4TargetVelocity = setMotorPower(power1);
@@ -539,7 +535,7 @@ public class driveComponents {
         v3LastError = v3Error;
 
     }
-    private void PIDCalculationSpline(double power1,double power2){
+    public void PIDCalculationSpline(double power1,double power2){
         pidTimer.reset();
         final double v1TargetVelocity = setMotorPower(power1);
         final double v4TargetVelocity = setMotorPower(power1);
@@ -602,23 +598,23 @@ public class driveComponents {
     /**
      * Helper functions
      * */
-    private double setMotorPower(double power){
+    public double setMotorPower(double power){
         return power * COUNTS_PER_MOTOR_REV;
     }
 
-    private void setRobotMotorsPower(double speed){
+    public void setRobotMotorsPower(double speed){
         leftFront.setVelocity(setMotorPower(speed));
         rightFront.setVelocity(setMotorPower(speed));
         leftRear.setVelocity(setMotorPower(speed));
         rightRear.setVelocity(setMotorPower(speed));
     }
-    private void setMotorsEnabled(){
+    public void setMotorsEnabled(){
         leftFront.setMotorEnable();
         rightFront.setMotorEnable();
         leftRear.setMotorEnable();
         rightRear.setMotorEnable();
     }
-    private void setMotorsDisabled(){
+    public void setMotorsDisabled(){
         leftFront.setMotorDisable();
         rightFront.setMotorDisable();
         leftRear.setMotorDisable();
