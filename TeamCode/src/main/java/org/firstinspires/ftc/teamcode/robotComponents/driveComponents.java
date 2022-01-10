@@ -130,13 +130,14 @@ public class driveComponents {
     public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
         // Forward / Reverse movement
         if(nextX != 0 && nextY == 0){
+            nextX = nextX * 0.87;
                 xMovement(-nextX,-speed);
         }
         // Left / Right movement
-        /*if(nextX == 0 && nextY != 0){
-            nextY *= 1.67;
-            yMovement(nextY,speed);
-        }*/
+        if(nextX == 0 && nextY != 0){
+
+            yMovement(-nextY,speed);
+        }
         // Diagonal movement
         /*if(nextX != 0 && nextY != 0){
             //moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
@@ -150,8 +151,8 @@ public class driveComponents {
      * Functions used to move the robot in the Autonomous period
      * */
     public void xMovement(double distance, double speed) throws InterruptedException {
+
         setMotorsEnabled();
-        distance = distance * 0.87;
         distance = distance * COUNTS_PER_CM;
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
 
@@ -179,7 +180,7 @@ public class driveComponents {
         setRobotMotorsPower(speed);
 
         while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
-            PIDmovement(setMotorPower(speed));
+            //PIDmovement(setMotorPower(speed));
         }
 
         setMotorsDisabled();
