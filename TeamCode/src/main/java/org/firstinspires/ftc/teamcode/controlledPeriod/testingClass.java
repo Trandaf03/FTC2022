@@ -42,7 +42,7 @@ public class testingClass extends LinearOpMode {
     public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
-        double angle = Math.toRadians(Math.atan2(distance,yDistance));
+        double angle = Math.toRadians(Math.toDegrees(Math.atan2(distance,xDistance)));
         drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
@@ -52,7 +52,7 @@ public class testingClass extends LinearOpMode {
 
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
-        double power1 = drive.setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
+        double power1 = drive.setMotorPower(Math.sin(angle + (Math.PI/4)) * speed);
         double power2 = drive.setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
         drive.leftFront.setVelocity(power1);
