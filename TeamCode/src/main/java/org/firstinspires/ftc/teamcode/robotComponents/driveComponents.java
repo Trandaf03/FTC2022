@@ -130,63 +130,29 @@ public class driveComponents {
     public void moveRobot(double nextX, double nextY, double speed) throws InterruptedException {
         // Forward / Reverse movement
         if(nextX != 0 && nextY == 0){
-            if(nextX > 0){
-                moveToPosition(ROBOT_MOVEMENT.FORWARD_DIR,nextX,nextY,speed);
-            } else {
-                moveToPosition(ROBOT_MOVEMENT.REVERSE_DIR,nextX,nextY,speed);
-            }
+                xMovement(-nextX,-speed);
         }
         // Left / Right movement
-        if(nextX == 0 && nextY != 0){
-            nextX *= 1.67;
+        /*if(nextX == 0 && nextY != 0){
             nextY *= 1.67;
-            if( nextY > 0){
-                moveToPosition(ROBOT_MOVEMENT.RIGHT_DIR,nextX,nextY,speed);
-            } else {
-                moveToPosition(ROBOT_MOVEMENT.LEFT_DIR,nextX,nextY,speed);
-            }
-        }
+            yMovement(nextY,speed);
+        }*/
         // Diagonal movement
-        if(nextX != 0 && nextY != 0){
-            moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
-        }
+        /*if(nextX != 0 && nextY != 0){
+            //moveToPosition(ROBOT_MOVEMENT.SPLINE_TO_DIR,nextX,nextY,speed);
+        }*/
     }
     /**
      * Secondary function for moving the robot in the Autonomous Period, used to call the function that is needed to be called, (OPTIONAL)
      * */
-    private void moveToPosition(ROBOT_MOVEMENT movement_direction, double xDistance, double yDistance, double speed) throws InterruptedException {
-        switch (movement_direction){
-            case FORWARD_DIR:
-                xMovement(-xDistance,speed);
-                break;
-
-            case REVERSE_DIR:
-                xMovement(xDistance,speed);
-                break;
-
-            case LEFT_DIR:
-                yMovement(-yDistance,speed);
-                break;
-
-            case RIGHT_DIR:
-                yMovement(yDistance,speed);
-                break;
-
-            case SPLINE_TO_DIR:
-                //spline(-xDistance, yDistance, speed);
-                break;
-            default:
-                break;
-        }
-    }
 
     /**
      * Functions used to move the robot in the Autonomous period
      * */
     public void xMovement(double distance, double speed) throws InterruptedException {
         setMotorsEnabled();
-
-        distance *= COUNTS_PER_CM;
+        distance = distance * 0.87;
+        distance = distance * COUNTS_PER_CM;
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
 
         encoders.setTargetPositionXmovement((int)distance);
@@ -195,7 +161,7 @@ public class driveComponents {
         setRobotMotorsPower(speed);
 
         while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
-            PIDmovement(setMotorPower(speed));
+            //PIDmovement(setMotorPower(speed));
         }
 
        setMotorsDisabled();

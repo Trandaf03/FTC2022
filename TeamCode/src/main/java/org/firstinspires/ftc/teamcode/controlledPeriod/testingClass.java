@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
  * Testing class.
  **/
 
-@TeleOp(name = "testeGyro" )
+@TeleOp(name = "testing" )
 
 public class testingClass extends LinearOpMode {
 
@@ -30,10 +30,11 @@ public class testingClass extends LinearOpMode {
         waitForStart();
         if(opModeIsActive());
         // rotatie
-        drive.rotateRobot(90,1);  // no corection
 
         // fata / spate
-       // drive.xMovement(100,1); // PID Correction
+        drive.moveRobot(75,0,0.5); // PID Correction
+        sleep(2000);
+        //drive.moveRobot(-100,0,1);
         // stanga / dreapta
        // drive.yMovement(100,1); // PID Correction
 

@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.robotComponents.driveComponents;
 
-@TeleOp(name = "ceva")
 public class Testing extends LinearOpMode {
 
     driveComponents drive = new driveComponents();
