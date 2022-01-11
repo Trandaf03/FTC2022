@@ -59,10 +59,14 @@ public class testingClass extends LinearOpMode {
 
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
+<<<<<<< HEAD
         double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
         double turn; // turn value [-1, 1]
 
+=======
+        double angle = Math.toRadians(Math.toDegrees(Math.atan2(distance,xDistance)));
+>>>>>>> parent of fcc4441 (Update testingClass.java)
         drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
