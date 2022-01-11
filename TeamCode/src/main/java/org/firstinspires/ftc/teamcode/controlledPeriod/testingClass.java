@@ -33,9 +33,6 @@ public class testingClass extends LinearOpMode {
         waitForStart();
         if(opModeIsActive());
 
-        spline(5*62,0,1, 0); // PID Correction
-        //drive.xMovementWithPIDandGyroCorection(3*62, 1);
-        //spline2(3*62, 3*62, 1, 0);
         sleep(2000);
 
     }
@@ -53,13 +50,13 @@ public class testingClass extends LinearOpMode {
      */
 
 
-
-    public void spline(double xDistance, double yDistance, double speed, double r ) throws InterruptedException{
+    //aicea mere unghiul dar nu si curba
+    public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
 
         xDistance *= 1.1;
         yDistance *= 1.5;
 
-        r = -1*r;
+
 
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
@@ -75,10 +72,10 @@ public class testingClass extends LinearOpMode {
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
 
-        double v1 = (Math.sin(angle + (Math.PI/4)) * speed + r)* 386.3 * 20;
-        double v2 = (Math.sin(angle + (Math.PI/4)) * speed - r)* 386.3 * 20;
-        double v3 = (Math.sin(angle + (Math.PI/4)) * speed + r)* 386.3 * 20;
-        double v4 = (Math.sin(angle + (Math.PI/4)) * speed - r)* 386.3 * 20;
+        double v1 = (Math.sin(angle + (Math.PI/4)) * speed )* 386.3 * 20;
+        double v2 = (Math.sin(angle - (Math.PI/4)) * speed )* 386.3 * 20;
+        double v3 = (Math.sin(angle + (Math.PI/4)) * speed )* 386.3 * 20;
+        double v4 = (Math.sin(angle - (Math.PI/4)) * speed )* 386.3 * 20;
 
         double correctionAngle;
         do {
@@ -109,6 +106,8 @@ public class testingClass extends LinearOpMode {
         drive.setMotorsDisabled();
 
     }
+
+    //aicea mere curba
     public void spline2(double xDistance, double yDistance, double speed, double r ) throws InterruptedException{
 
         xDistance *= 1.1;
