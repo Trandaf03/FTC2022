@@ -32,7 +32,7 @@ public class testingClass extends LinearOpMode {
         waitForStart();
         if(opModeIsActive());
 
-        spline(4*62,3*62,1, 1); // PID Correction
+        spline(4*62,3*62,1, 0); // PID Correction
         //drive.xMovementWithPIDandGyroCorection(122, 1);
         sleep(2000);
 
