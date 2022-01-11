@@ -32,8 +32,8 @@ public class testingClass extends LinearOpMode {
         waitForStart();
         if(opModeIsActive());
 
-        //spline(4*62,3*62,1); // PID Correction
-        drive.xMovementWithPIDandGyroCorection(122, 1);
+        spline(4*62,3*62,1, 1); // PID Correction
+        //drive.xMovementWithPIDandGyroCorection(122, 1);
         sleep(2000);
 
     }
@@ -52,21 +52,16 @@ public class testingClass extends LinearOpMode {
 
 
 
-    public void spline(double xDistance, double yDistance, double speed, double turn) throws InterruptedException{
+    public void spline(double xDistance, double yDistance, double speed, double invarte) throws InterruptedException{
 
         xDistance *= 1.1;
         yDistance *= 1.5;
 
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
-<<<<<<< HEAD
         double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
-        double turn; // turn value [-1, 1]
-
-=======
-        double angle = Math.toRadians(Math.toDegrees(Math.atan2(distance,xDistance)));
->>>>>>> parent of fcc4441 (Update testingClass.java)
+        double turn = -Math.abs(invarte);
         drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
