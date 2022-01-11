@@ -35,7 +35,7 @@ public class driveComponents {
     public DcMotorEx rightRear = null;
 
     //Gyro declaring
-    private Gyro gyro = new Gyro();
+    public Gyro gyro = new Gyro();
 
     //driveUtilities declaring
     public powerBehavior motorBreaking = new powerBehavior();

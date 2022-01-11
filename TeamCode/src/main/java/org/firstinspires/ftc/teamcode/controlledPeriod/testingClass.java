@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.internal.ftdi.eeprom.FT_EEPROM_232H;
 import org.firstinspires.ftc.teamcode.robotComponents.driveComponents;
@@ -32,7 +33,7 @@ public class testingClass extends LinearOpMode {
         waitForStart();
         if(opModeIsActive());
 
-        spline(4*62,3*62,1, 0); // PID Correction
+        splinetest2(4*62,3*62,1, 1); // PID Correction
         //drive.xMovementWithPIDandGyroCorection(122, 1);
         sleep(2000);
 
@@ -101,4 +102,68 @@ public class testingClass extends LinearOpMode {
         drive.setMotorsDisabled();
 
     }
+    public void splinetest2(double xDistance, double yDistance, double speed, double stopHeading) throws InterruptedException{
+
+
+        double currentHeading = drive.gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
+        double lp,rp;
+        if(stopHeading < 0){
+            lp = -0.1;
+            rp = 0.1;
+        } else {
+            lp = 0.1;
+            rp = -0.1;
+        }
+        xDistance *= 1.1;
+        yDistance *= 1.5;
+
+        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
+        double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
+
+        double turn = -Math.abs(-10);
+        drive.setMotorsEnabled();
+        Thread.sleep(100);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+        Thread.sleep(100);
+        drive.encoders.setTargetPositionXmovement(-(int)distance);
+
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
+
+
+        double power1,power2;
+        double correctionAngle;
+        do {
+            power1 = Math.sin(angle + (Math.PI / 4)) * speed + turn;
+            power2 = Math.sin(angle - (Math.PI / 4)) * speed + turn;
+
+            if(drive.gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING) > currentHeading){
+                power1 +=lp;
+                power2 +=rp;
+            }
+
+            drive.leftFront.setPower(power1);
+            drive.rightRear.setPower(power1);
+            drive.rightFront.setPower(power2);
+            drive.leftRear.setPower(power2) ;
+
+
+            telemetry.addData("unghi", angle);
+            telemetry.addData("distance", distance / COUNTS_PER_CM);
+            telemetry.addData("power1",power1);
+            telemetry.addData("power2",power2);
+            telemetry.update();
+
+        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
+
+        drive.leftFront.setVelocity(0);
+        drive.rightRear.setVelocity(0);
+        drive.rightFront.setVelocity(0);
+        drive.leftRear.setVelocity(0);
+
+        drive.setMotorsDisabled();
+
+    }
+
+
 }
