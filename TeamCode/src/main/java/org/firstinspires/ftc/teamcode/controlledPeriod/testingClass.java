@@ -38,15 +38,24 @@ public class testingClass extends LinearOpMode {
     }
 
     /**original teleop function
-     
-            double y = gamepad1.left_stick_y * ;
-            double x = gamepad1.left_stick_x * ;
-            double rx = -gamepad1.right_stick_x * ;
 
-            drive.stangaFata.setPower(y + x + rx);
-            drive.stangaSpate.setPower(y - x + rx);
-            drive.dreaptaFata.setPower(y - x - rx);
-            drive.dreaptaSpate.setPower(y + x - rx);
+     double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
+     double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
+     double rightX = -gamepad1.right_stick_x;
+
+     final double v1 = r * Math.cos(robotAngle) + rightX;
+     final double v2 = r * Math.sin(robotAngle) - rightX;
+     final double v3 = r * Math.sin(robotAngle) + rightX;
+     final double v4 = r * Math.cos(robotAngle) - rightX;
+
+     frontLeft.setPower(v1);
+     frontRight.setPower(v2);
+     backLeft.setPower(v3);
+     backRight.setPower(v4);
+     */
+
+    /*//calcul care merge
+    Math.sin(angle + (Math.PI/4)) * speed
      */
 
 
@@ -159,6 +168,39 @@ public class testingClass extends LinearOpMode {
 
     }
 
+    //deducere
+    //TODO
+    public void deducere(double xDistance, double yDistance, double speed, double turn) throws InterruptedException{
+
+        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
+
+        double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
+
+        drive.setMotorsEnabled();
+
+
+
+        do {
+            double r = Math.hypot(xDistance, yDistance);
+            double robotAngle = Math.atan2(yDistance, -xDistance) - Math.PI / 4;
+            double rightX = -turn;
+
+            final double v1 = r * Math.cos(robotAngle) + rightX;
+            final double v2 = r * Math.sin(robotAngle) - rightX;
+            final double v3 = r * Math.sin(robotAngle) + rightX;
+            final double v4 = r * Math.cos(robotAngle) - rightX;
+
+
+        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
+
+        drive.leftFront.setVelocity(0);
+        drive.rightRear.setVelocity(0);
+        drive.rightFront.setVelocity(0);
+        drive.leftRear.setVelocity(0);
+
+        drive.setMotorsDisabled();
+
+    }
 
 
 }
