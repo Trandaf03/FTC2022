@@ -95,6 +95,7 @@ public class driveComponents {
         motorBreaking.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         encoders.setMotorsName(leftFront,leftRear,rightFront,rightRear);
         stopping.setMotorsName(leftFront,leftRear,rightFront,rightRear);
+
         //setting the heading,braking mode and the encoder mode
         robotDir.setRobotDirection(heading);
         motorBreaking.setBreakingMode(breakingMode);
@@ -123,7 +124,6 @@ public class driveComponents {
         leftRear.setVelocity(v3);
         rightRear.setVelocity(v4);
 
-
     }
 
 
@@ -138,7 +138,7 @@ public class driveComponents {
         } else
         // Left / Right movement
         if(nextX == 0 && nextY != 0){
-            nextY = nextY*0.95;
+            nextY = nextY * 0.95;
             yMovement(-nextY,speed);
         } else{
         // Diagonal movement{
