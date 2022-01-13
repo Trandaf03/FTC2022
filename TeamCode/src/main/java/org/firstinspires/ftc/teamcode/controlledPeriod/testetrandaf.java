@@ -17,13 +17,13 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 @TeleOp(name = "trandaf")
 public class testetrandaf extends LinearOpMode {
 
-    driveComponents drive = new driveComponents();
+    driveComponents drive = new driveComponents(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+
     @Override
     public void runOpMode() throws InterruptedException {
 
 
-        drive.driveInitialization(hardwareMap, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_WITHOUT);
-        double xDistance = 62*4, yDistance = 62*2, speed = 1, stopHeading = 90;
+         double xDistance = 62*4, yDistance = 62*2, speed = 1, stopHeading = 90;
 
         waitForStart();
         if(opModeIsActive());

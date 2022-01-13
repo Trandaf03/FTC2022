@@ -23,16 +23,14 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 public class testingClass extends LinearOpMode {
 
 
-    driveComponents drive = new driveComponents();
+    driveComponents drive = new driveComponents(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
     @Override
     public void runOpMode() throws InterruptedException {
-
-        drive.driveInitialization(hardwareMap, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_WITHOUT);
 
 
         waitForStart();
         if(opModeIsActive());
-        nebunie(0,0,1,0.99);
+        nebunie(0,-50,1,90);
         sleep(2000);
 
     }

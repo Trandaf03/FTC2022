@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.Gyro;
 
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
@@ -77,11 +78,13 @@ public class driveComponents {
     /**
      * drive initialization function
      * */
-    public void driveInitialization(HardwareMap map,
+    Telemetry telemetry;
+    public driveComponents(HardwareMap map, Telemetry telemetry,
                                     robotDirection.ROBOT_DIRECTIONS heading,
                                     powerBehavior.ROBOT_BREAKING breakingMode,
                                     encoderUsing.ENCODER_RUNNING_MODE encoderMode){
         // hardware map linking
+        this.telemetry = telemetry;
         leftFront = map.get(DcMotorEx.class, "leftFront");
         rightFront = map.get(DcMotorEx.class, "rightFront");
         leftRear = map.get(DcMotorEx.class, "leftRear");
@@ -162,6 +165,11 @@ public class driveComponents {
 
         while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
             //PIDmovement(setMotorPower(speed));
+            telemetry.addData("leftFront position",leftFront.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.addData("rightFront position",rightFront.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.addData("leftRear position",leftRear.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.addData("rightRear position",rightRear.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.update();
         }
 
        setMotorsDisabled();
