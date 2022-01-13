@@ -11,9 +11,9 @@ public class robotInfo {
      **/
 
 
-    private static final double     COUNTS_PER_MOTOR_REV    = 386.3 ;
-    private static final double     DRIVE_GEAR_REDUCTION    = 2 ;
-    private static final double     WHEEL_DIAMETER_CM   = 10 ;
+    public static final double     COUNTS_PER_MOTOR_REV    = 386.3 ;
+    public static final double     DRIVE_GEAR_REDUCTION    = 2 ;
+    public static final double     WHEEL_DIAMETER_CM   = 10 ;
     public static final double     COUNTS_PER_CM        = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
 
 

@@ -18,7 +18,7 @@ public class odometryTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
         waitForStart();
-        drive.resetEncoders();
+        drive.encoders.resetEncoders();
         while (opModeIsActive()) {
 
             drive.robotTest(this.gamepad1.left_stick_x,this.gamepad1.left_stick_y,this.gamepad1.right_stick_x);
