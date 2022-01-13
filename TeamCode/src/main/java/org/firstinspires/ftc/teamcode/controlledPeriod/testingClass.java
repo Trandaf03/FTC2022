@@ -32,7 +32,7 @@ public class testingClass extends LinearOpMode {
 
         waitForStart();
         if(opModeIsActive());
-
+        nebunie(0,0,1,50);
         sleep(2000);
 
     }
@@ -117,7 +117,7 @@ public class testingClass extends LinearOpMode {
     }
 
     //aicea mere curba
-    public void spline2(double xDistance, double yDistance, double speed, double r ) throws InterruptedException{
+    public void spline2(double xDistance, double yDistance, double speed, double r) throws InterruptedException{
 
         xDistance *= 1.1;
         yDistance *= 1.5;
@@ -170,25 +170,43 @@ public class testingClass extends LinearOpMode {
 
     //deducere
     //TODO
-    public void deducere(double xDistance, double yDistance, double speed, double turn) throws InterruptedException{
+    public void nebunie(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
 
+        xDistance *= 1.1;
+        yDistance *= 1.5;
+
+        //distanta de mers --> ipotenuza
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
-        double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
+        //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
         drive.setMotorsEnabled();
 
+        double y = -yDistance;
+        double x = xDistance;
+        double rx = t;
 
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+        Thread.sleep(100);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+        Thread.sleep(100);
+        drive.encoders.setTargetPositionXmovement(-(int)distance);
+
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
         do {
-            double r = Math.hypot(xDistance, yDistance);
-            double robotAngle = Math.atan2(yDistance, -xDistance) - Math.PI / 4;
-            double rightX = -turn;
+            double v1 =( y + x + rx)/denominator;
+            double v2 = (y - x + rx)/denominator;
+            double v3 = (y - x - rx)/denominator;
+            double v4 =(y + x - rx)/denominator;
 
-            final double v1 = r * Math.cos(robotAngle) + rightX;
-            final double v2 = r * Math.sin(robotAngle) - rightX;
-            final double v3 = r * Math.sin(robotAngle) + rightX;
-            final double v4 = r * Math.cos(robotAngle) - rightX;
+            drive.leftFront.setPower(v1);
+            drive.leftRear.setPower(v2);
+            drive.rightFront.setPower(v3) ;
+            drive.rightRear.setPower(v4);
+
 
 
         } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
