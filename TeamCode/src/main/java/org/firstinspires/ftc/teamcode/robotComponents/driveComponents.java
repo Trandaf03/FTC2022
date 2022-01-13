@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -34,6 +35,8 @@ public class driveComponents {
     public DcMotorEx leftRear = null;
     public DcMotorEx rightFront = null;
     public DcMotorEx rightRear = null;
+    public DcMotorEx forwardEncoder = null;
+    public DcMotorEx leftEncoder = null;
 
     //Gyro declaring
     public Gyro gyro = new Gyro();
@@ -79,7 +82,7 @@ public class driveComponents {
      * drive initialization function
      * */
     Telemetry telemetry;
-    public driveComponents(HardwareMap map, Telemetry telemetry,
+    public void init(HardwareMap map, Telemetry telemetry,
                                     robotDirection.ROBOT_DIRECTIONS heading,
                                     powerBehavior.ROBOT_BREAKING breakingMode,
                                     encoderUsing.ENCODER_RUNNING_MODE encoderMode){
@@ -107,6 +110,22 @@ public class driveComponents {
 
         // stopping the motors to be sure that they are stopped :)
         stopping.driveStop();
+
+        forwardEncoder = map.get(DcMotorEx.class,"rotationEncoder");
+        leftEncoder = map.get(DcMotorEx.class,"ducky");
+
+        forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        forwardEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        leftEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
 
@@ -147,6 +166,44 @@ public class driveComponents {
         // Diagonal movement{
             spline(nextX,nextY,speed);
         }
+    }
+
+    public double getEncoderTics(double distance, double power){
+
+        setMotorsEnabled();
+        distance*= COUNTS_PER_CM;
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+        encoders.setTargetPositionXmovement((int)distance);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
+
+        setRobotMotorsPower(power);
+        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
+            telemetry.addLine("moving");
+            telemetry.update();
+        }
+        double lfPos = leftFront.getCurrentPosition();
+        double lrPos = leftRear.getCurrentPosition();
+        double rfPos = rightFront.getCurrentPosition();
+        double rrPos = rightRear.getCurrentPosition();
+        return (lfPos + lrPos + rfPos + rrPos)/4;
+    }
+    public void goByEncoder(double distance, double power, double ceva){
+
+        setMotorsEnabled();
+        distance = distance * ceva;
+
+
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        setRobotMotorsPower(power);
+        while(forwardEncoder.getCurrentPosition() < distance){
+            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/ceva);
+            telemetry.update();
+        }
+
+        stopping.driveStop();
+        setMotorsDisabled();
     }
 
     /**

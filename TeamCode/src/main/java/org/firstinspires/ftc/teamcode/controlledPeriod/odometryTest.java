@@ -10,12 +10,12 @@ import org.firstinspires.ftc.teamcode.utilities.odometry.odometry;
 
 public class odometryTest extends LinearOpMode {
 
-    driveComponents drive = new driveComponents(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
-
+    driveComponents drive = new driveComponents();
     odometry odometry = new odometry(hardwareMap,telemetry,drive);
     @Override
     public void runOpMode() throws InterruptedException {
 
+        drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
 
         waitForStart();
         if(opModeIsActive()) return;

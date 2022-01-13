@@ -24,7 +24,7 @@ public class odometry {
     private static final double forwardDistanceFromCenter = -10;
     private static final double leftDistanceFromCenter = -5;
 
-    static final double COUNTS_PER_MOTOR_REV    = 1000 ;
+    static final double COUNTS_PER_MOTOR_REV    = 1000 ; //TODO TUNE THIS AFTER GETTING TICS
     static final double DRIVE_GEAR_REDUCTION    = 1 ;
     static final double WHEEL_DIAMETER_CM   = 4 ;
     static final double COUNTS_PER_CM         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
