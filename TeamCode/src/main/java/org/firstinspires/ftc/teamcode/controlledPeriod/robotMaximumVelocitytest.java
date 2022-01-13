@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 import org.opencv.core.Mat;
 
-@TeleOp(name="maximumvelocity test")
+@TeleOp(name="maximumvelocity test", group = "testeodometrie")
 public class robotMaximumVelocitytest extends LinearOpMode {
 
     driveComponents drive = new driveComponents();

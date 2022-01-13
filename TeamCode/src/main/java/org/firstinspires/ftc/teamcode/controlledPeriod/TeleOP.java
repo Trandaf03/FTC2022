@@ -24,7 +24,7 @@ public class TeleOP extends LinearOpMode {
     /**
      * Calling every component on the robot
      * */
-    driveComponents drive = new driveComponents(hardwareMap, telemetry,  robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+    driveComponents drive = new driveComponents();
     collectingComponents collector = new collectingComponents();
     handlingComponents handle = new handlingComponents();
     duckRotation ducky = new duckRotation();
@@ -48,7 +48,7 @@ public class TeleOP extends LinearOpMode {
          * To initialize handle class you need: the robot hardwaremap
          * To initialize ducky class you need: the robot hardwaremap
          * */
-
+        drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
         handle.initHandlingComponents(hardwareMap);
         ducky.initDuckRotation(hardwareMap);
 

@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.controlledPeriod;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robotComponents.driveComponents;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 
+
+@TeleOp(name = "testareCorectitudineTicuri", group = "testeodometrie")
 public class testareTicsEncoder extends LinearOpMode {
 
     private static final double     COUNTS_PER_MOTOR_REV    = 386.3 ; //TODO TUNE THIS WITH MEDIUM VALUE

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name = "Aflaticksencoder TUNE THIS")
+@Autonomous(name = "Aflaticksencoder TUNE THIS", group = "testeodometrie")
 public class aflaTicsEncoder extends LinearOpMode {
 
     driveComponents drive = new driveComponents();

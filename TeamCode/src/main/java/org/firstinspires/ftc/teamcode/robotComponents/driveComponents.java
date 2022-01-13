@@ -170,6 +170,9 @@ public class driveComponents {
 
     public double getEncoderTics(double distance, double power){
 
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         setMotorsEnabled();
         distance*= COUNTS_PER_CM;
         encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
@@ -186,6 +189,39 @@ public class driveComponents {
         double rfPos = rightFront.getCurrentPosition();
         double rrPos = rightRear.getCurrentPosition();
         return (lfPos + lrPos + rfPos + rrPos)/4;
+    }
+    public void getEncoderAngle(double degrees, double power) {
+
+        double  lp, rp;
+        resetAngle();
+
+        if (degrees < 0)
+        {   // left rotation
+            lp = -power;
+            rp = power;
+        }
+        else if (degrees > 0)
+        {   // right rotation
+            lp = power;
+            rp = -power;
+        }
+        else return;
+
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftFront.setPower(lp);
+        leftRear.setPower(lp);
+        rightRear.setPower(rp);
+        rightFront.setPower(rp);
+
+        if (degrees < 0)
+            while (getAngle() > degrees) {}
+        else
+            while (getAngle() < degrees) {}
+
+        stopping.driveStop();
+        resetAngle();
     }
     public void goByEncoder(double distance, double power, double ceva){
 
