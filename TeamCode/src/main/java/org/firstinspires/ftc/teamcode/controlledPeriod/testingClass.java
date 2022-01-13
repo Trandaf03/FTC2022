@@ -32,7 +32,7 @@ public class testingClass extends LinearOpMode {
 
         waitForStart();
         if(opModeIsActive());
-        nebunie(0,0,1,50);
+        nebunie(0,0,1,0.99);
         sleep(2000);
 
     }
