@@ -11,11 +11,10 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 @TeleOp(name = "teleopteste")
 public class TeleOPteste extends LinearOpMode {
 
-    driveComponents drive = new driveComponents();
+    driveComponents drive = new driveComponents(hardwareMap, telemetry , robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
 
     @Override
     public void runOpMode() throws InterruptedException {
-        drive.init(hardwareMap, telemetry,  robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
 
 
         waitForStart();

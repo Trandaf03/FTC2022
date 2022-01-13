@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -17,7 +16,6 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotStopping;
-import org.firstinspires.ftc.teamcode.utilities.odometry.odometry;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,10 +34,6 @@ public class driveComponents {
     public DcMotorEx leftRear = null;
     public DcMotorEx rightFront = null;
     public DcMotorEx rightRear = null;
-
-    public DcMotorEx forwardEncoder = null;
-    public DcMotorEx leftEncoder = null;
-
 
     //Gyro declaring
     public Gyro gyro = new Gyro();
@@ -85,13 +79,11 @@ public class driveComponents {
      * drive initialization function
      * */
     Telemetry telemetry;
-    HardwareMap hardwareMap;
-    public void init(HardwareMap map, Telemetry telemetry,
+    public driveComponents(HardwareMap map, Telemetry telemetry,
                                     robotDirection.ROBOT_DIRECTIONS heading,
                                     powerBehavior.ROBOT_BREAKING breakingMode,
                                     encoderUsing.ENCODER_RUNNING_MODE encoderMode){
         // hardware map linking
-        this.hardwareMap = map;
         this.telemetry = telemetry;
         leftFront = map.get(DcMotorEx.class, "leftFront");
         rightFront = map.get(DcMotorEx.class, "rightFront");
@@ -115,30 +107,9 @@ public class driveComponents {
 
         // stopping the motors to be sure that they are stopped :)
         stopping.driveStop();
-
-
-        forwardEncoder = hardwareMap.get(DcMotorEx.class,"rotationEncoder");
-        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducking");
-
-        forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        forwardEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        leftEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public double returnX(){
-        return forwardEncoder.getCurrentPosition();
-    }
-    public double returnY(){
-        return leftEncoder.getCurrentPosition();
-    }
+
     /**
      * Main function used in the Controlled Period for moving the robot
      * */
@@ -156,39 +127,6 @@ public class driveComponents {
         leftRear.setVelocity(v3);
         rightRear.setVelocity(v4);
 
-    }
-    public void resetEncoders(){
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-    public void robotTest(double left_stick_x, double left_stick_y, double right_stick_x){
-        double r = Math.hypot(left_stick_x, -left_stick_y);
-        double robotAngle = Math.atan2(left_stick_y, -left_stick_x) - Math.PI / 4;
-        double rightX = -right_stick_x;
-        final double v1 = (r * Math.cos(robotAngle) + rightX) * 386.3 * 20;
-        final double v2 = (r * Math.sin(robotAngle) - rightX) * 386.3 * 20;
-        final double v3 = (r * Math.sin(robotAngle) + rightX) * 386.3 * 20;
-        final double v4 = (r * Math.cos(robotAngle) - rightX) * 386.3 * 20;
-
-        leftFront.setVelocity(v1);
-        rightFront.setVelocity(v2);
-        leftRear.setVelocity(v3);
-        rightRear.setVelocity(v4);
-
-        telemetry.addData("xPosition", returnX()/33.5);
-        telemetry.addData("yPosition", returnY()/33.5);
-        telemetry.addData("leftFront position", leftFront.getCurrentPosition()/COUNTS_PER_CM);
-        telemetry.addData("rightFront position", rightFront.getCurrentPosition()/COUNTS_PER_CM);
-        telemetry.addData("leftRear position", leftRear.getCurrentPosition()/COUNTS_PER_CM);
-        telemetry.addData("rightRear position", rightRear.getCurrentPosition()/COUNTS_PER_CM);
-        telemetry.update();
     }
 
 

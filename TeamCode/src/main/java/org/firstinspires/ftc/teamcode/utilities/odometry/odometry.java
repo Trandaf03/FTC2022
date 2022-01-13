@@ -16,6 +16,7 @@ public class odometry {
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
+    public driveComponents drive;
 
     private static final double robotLenght = 33.5;
     private static final double  robotWidth = 31.5;
@@ -30,25 +31,23 @@ public class odometry {
             (WHEEL_DIAMETER_CM * 3.1415);
 
 
-    public odometry(HardwareMap hardwareMap, Telemetry telemetry){
+    public odometry(HardwareMap hardwareMap, Telemetry telemetry, driveComponents drive){
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
+        this.drive = drive;
         initOdometry();
-    }
-    public odometry(){
-
     }
 
     public double returnX(){
         return forwardEncoder.getCurrentPosition();
-      }
+    }
     public double returnY(){
         return leftEncoder.getCurrentPosition();
     }
 
-    public void initOdometry(){
+    private void initOdometry(){
         forwardEncoder = hardwareMap.get(DcMotorEx.class,"rotationEncoder");
-        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducking");
+        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducky");
 
         forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
         leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
