@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -23,29 +22,21 @@ public class Gyro {
     private BNO055IMU imuSensor;
     private Orientation robotOrientation;
 
-
-    private HardwareMap hardwareMap;
-    private double grade;
-    private double globalAngle;
-    private Gyro gyro = new Gyro();
-    public List<Double> motorPowers;
-
-    public Gyro(HardwareMap hardwareMap){
-        this.hardwareMap = hardwareMap;
+    public Gyro(){
 
     }
     public enum ROBOT_GYRO_DIRECTION{
         HEADING, ROLL, PITCH;
     }
 
-    public void initGyro(){
+    public void initGyro(HardwareMap map){
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
 
-        imuSensor = hardwareMap.get(BNO055IMU.class, "imu");
+        imuSensor = map.get(BNO055IMU.class, "imu");
         imuSensor.initialize(parameters);
     }
 
@@ -76,64 +67,4 @@ public class Gyro {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
-    public void resetAngle() {
-        grade = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
-        globalAngle = 0;
-    }
-    public double getAngle() {
-
-        double angles = gyro.returnAngle(Gyro.ROBOT_GYRO_DIRECTION.HEADING);
-
-        double rotationAngle = angles - grade;
-        if (rotationAngle < -180)
-            rotationAngle += 360;
-        else if (rotationAngle > 180)
-            rotationAngle -= 360;
-        globalAngle += rotationAngle;
-        grade = angles;
-        return globalAngle;
-    }
-    public double checkDirection() {
-        double corectie, unghi, unghi_corectie = .10;
-
-        unghi = getAngle();
-
-        if (unghi == 0)
-            corectie = 0;
-        else
-            corectie = -unghi;
-
-        corectie = corectie * unghi_corectie;
-        return corectie;
-    }
-
-    public void rotateRobot(double degrees, double power) {
-
-        double  lp, rp;
-        resetAngle();
-
-        if (degrees < 0)
-        {   // left rotation
-            lp = -power;
-            rp = power;
-        }
-        else if (degrees > 0)
-        {   // right rotation
-            lp = power;
-            rp = -power;
-        }
-        else return;
-        /*
-        leftFront.setPower(lp);
-        leftRear.setPower(lp);
-        rightRear.setPower(rp);
-        rightFront.setPower(rp);
-*/
-        if (degrees < 0)
-            while (getAngle() > degrees) {}
-        else
-            while (getAngle() < degrees) {}
-
-        resetAngle();
-    }
 }

@@ -70,7 +70,7 @@ public class testingClass extends LinearOpMode {
 
         double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
-        drive.encoders.setMotorsEnabled();
+        drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
@@ -111,7 +111,7 @@ public class testingClass extends LinearOpMode {
         drive.rightFront.setVelocity(0);
         drive.leftRear.setVelocity(0);
 
-        drive.encoders.setMotorsDisabled();
+        drive.setMotorsDisabled();
 
     }
 
@@ -125,7 +125,7 @@ public class testingClass extends LinearOpMode {
 
         double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
-        drive.encoders.setMotorsEnabled();
+        drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
@@ -163,7 +163,7 @@ public class testingClass extends LinearOpMode {
         drive.rightFront.setVelocity(0);
         drive.leftRear.setVelocity(0);
 
-        drive.encoders.setMotorsDisabled();
+        drive.setMotorsDisabled();
 
     }
 
@@ -179,7 +179,7 @@ public class testingClass extends LinearOpMode {
 
         //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
-        drive.encoders.setMotorsEnabled();
+        drive.setMotorsEnabled();
 
         double y = -yDistance;
         double x = xDistance;
@@ -215,7 +215,7 @@ public class testingClass extends LinearOpMode {
         drive.rightFront.setVelocity(0);
         drive.leftRear.setVelocity(0);
 
-        drive.encoders.setMotorsDisabled();
+        drive.setMotorsDisabled();
 
     }
 

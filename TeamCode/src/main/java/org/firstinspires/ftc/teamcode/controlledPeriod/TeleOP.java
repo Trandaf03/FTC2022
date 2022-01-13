@@ -28,7 +28,7 @@ public class TeleOP extends LinearOpMode {
     collectingComponents collector = new collectingComponents();
     handlingComponents handle = new handlingComponents();
     duckRotation ducky = new duckRotation();
-    robotStopping stop = new robotStopping(drive.leftFront,drive.leftRear,drive.rightFront,drive.rightRear);
+    robotStopping stop = new robotStopping();
 
     /**
      * Variables used for powering the collector, ducky motor and the servo from the pulley

@@ -16,13 +16,16 @@ public class robotStopping {
     private DcMotorEx rightfront;
     private DcMotorEx rightrear;
 
-    public robotStopping(DcMotorEx leftFront, DcMotorEx leftRear, DcMotorEx rightFront, DcMotorEx rightRear){
-        this.leftfront = leftFront;
-        this.leftrear = leftRear;
-        this.rightfront = rightFront;
-        this.rightrear = rightRear;
-    }
+    public robotStopping(){
 
+    }
+    public void setMotorsName(DcMotorEx leftFront, DcMotorEx leftRear, DcMotorEx rightFront, DcMotorEx rightRear){
+        leftfront = leftFront;
+        leftrear = leftRear;
+        rightfront = rightFront;
+        rightrear = rightRear;
+
+    }
     public void driveStop(){
         leftfront.setPower(0);
         leftrear.setPower(0);
