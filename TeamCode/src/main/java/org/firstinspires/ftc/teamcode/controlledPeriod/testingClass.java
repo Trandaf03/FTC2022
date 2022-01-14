@@ -33,7 +33,11 @@ public class testingClass extends LinearOpMode {
 
         waitForStart();
         if(opModeIsActive());
-        nebunie(0,-50,1,90);
+        nebunie(-62,-62,1,180);
+        nebunie(-62,-62,1,-180);
+        this.sleep(200);
+        //nebunie(0,-62,1,180);
+
         sleep(2000);
 
     }

@@ -112,7 +112,7 @@ public class driveComponents {
         stopping.driveStop();
 
         forwardEncoder = map.get(DcMotorEx.class,"rotationEncoder");
-        leftEncoder = map.get(DcMotorEx.class,"ducky");
+        leftEncoder = map.get(DcMotorEx.class,"rotationEncoder");
 
         forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
         leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -223,22 +223,39 @@ public class driveComponents {
         stopping.driveStop();
         resetAngle();
     }
-    public void goByEncoder(double distance, double power, double ceva){
+//    public void odometryY(double distance, double power, double ceva){
+//
+//        setMotorsEnabled();
+//        distance = distance * ceva;
+//
+//
+//        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        setRobotMotorsPower(power);
+//        while(forwardEncoder.getCurrentPosition() < distance){
+//            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/ceva);
+//            telemetry.update();
+//        }
+//
+//        stopping.driveStop();
+//        setMotorsDisabled();
+//    }
+    public void odometryX(double distance, double power, double ceva){
 
         setMotorsEnabled();
         distance = distance * ceva;
 
 
-        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        setRobotMotorsPower(power);
-        while(forwardEncoder.getCurrentPosition() < distance){
-            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/ceva);
+        strafePower(power);
+        while(leftEncoder.getCurrentPosition() < distance){
+            telemetry.addData("acum sunt la cm", leftEncoder.getCurrentPosition()/ceva);
             telemetry.update();
         }
-
-        stopping.driveStop();
+        setRobotMotorsPower(0);
         setMotorsDisabled();
     }
 
@@ -256,14 +273,7 @@ public class driveComponents {
 
         setRobotMotorsPower(speed);
 
-        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
-            //PIDmovement(setMotorPower(speed));
-            telemetry.addData("leftFront position",leftFront.getCurrentPosition()/COUNTS_PER_CM);
-            telemetry.addData("rightFront position",rightFront.getCurrentPosition()/COUNTS_PER_CM);
-            telemetry.addData("leftRear position",leftRear.getCurrentPosition()/COUNTS_PER_CM);
-            telemetry.addData("rightRear position",rightRear.getCurrentPosition()/COUNTS_PER_CM);
-            telemetry.update();
-        }
+        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){ }
 
        setMotorsDisabled();
 
@@ -282,6 +292,26 @@ public class driveComponents {
         while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
             //PIDmovement(setMotorPower(speed));
         }
+        setRobotMotorsPower(0);
+
+        setMotorsDisabled();
+
+    }
+    public void TestyMovement(double distance, double speed) throws InterruptedException {
+        setMotorsEnabled();
+
+        distance *= COUNTS_PER_CM;
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+
+        encoders.setTargetPositionYmovement((int)distance);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
+
+        setRobotMotorsPower(speed);
+
+        while(leftFront.isBusy() && rightFront.isBusy() && leftRear.isBusy() && rightRear.isBusy()){
+            //PIDmovement(setMotorPower(speed));
+        }
+        setRobotMotorsPower(0);
 
         setMotorsDisabled();
 
@@ -710,6 +740,13 @@ public class driveComponents {
         leftRear.setVelocity(setMotorPower(speed));
         rightRear.setVelocity(setMotorPower(speed));
     }
+    public void strafePower(double speed){
+        leftFront.setVelocity(setMotorPower(-speed));
+        rightFront.setVelocity(setMotorPower(speed));
+        leftRear.setVelocity(setMotorPower(speed));
+        rightRear.setVelocity(setMotorPower(-speed));
+    }
+
     public void setMotorsEnabled(){
         leftFront.setMotorEnable();
         rightFront.setMotorEnable();

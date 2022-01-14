@@ -31,7 +31,7 @@ public class odometry {
             (WHEEL_DIAMETER_CM * 3.1415);
 
 
-    public odometry(HardwareMap hardwareMap, Telemetry telemetry, driveComponents drive){
+    public odometry(){
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.drive = drive;
@@ -47,7 +47,7 @@ public class odometry {
 
     private void initOdometry(){
         forwardEncoder = hardwareMap.get(DcMotorEx.class,"rotationEncoder");
-        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducky");
+        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducking");
 
         forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
         leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
