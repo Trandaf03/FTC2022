@@ -223,41 +223,7 @@ public class driveComponents {
         stopping.driveStop();
         resetAngle();
     }
-//    public void odometryY(double distance, double power, double ceva){
-//
-//        setMotorsEnabled();
-//        distance = distance * ceva;
-//
-//
-//        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//        setRobotMotorsPower(power);
-//        while(forwardEncoder.getCurrentPosition() < distance){
-//            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/ceva);
-//            telemetry.update();
-//        }
-//
-//        stopping.driveStop();
-//        setMotorsDisabled();
-//    }
-    public void odometryX(double distance, double power, double ceva){
 
-        setMotorsEnabled();
-        distance = distance * ceva;
-
-
-        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        strafePower(power);
-        while(leftEncoder.getCurrentPosition() < distance){
-            telemetry.addData("acum sunt la cm", leftEncoder.getCurrentPosition()/ceva);
-            telemetry.update();
-        }
-        setRobotMotorsPower(0);
-        setMotorsDisabled();
-    }
 
     /**
      * Functions used to move the robot in the Autonomous period
@@ -316,47 +282,56 @@ public class driveComponents {
         setMotorsDisabled();
 
     }
-    public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
+    
+    public void nebunie(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
+
+        xDistance *= 1.1;
+        yDistance *= 1.5;
+
+        //distanta de mers --> ipotenuza
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
-        double angle = Math.toRadians(Math.atan2(xDistance,distance));
-        setMotorsEnabled();
+        //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
+
+        drive.setMotorsEnabled();
+
+        double y = -yDistance;
+        double x = xDistance;
+        double rx = t;
+
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
         Thread.sleep(100);
-        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
-        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
         Thread.sleep(100);
-        encoders.setTargetPositionXmovement(-(int)distance);
+        drive.encoders.setTargetPositionXmovement(-(int)distance);
 
-        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
+        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
-        double power1 = setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
-        double power2 = setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
-
-        leftFront.setVelocity(power1);
-        rightRear.setVelocity(power1);
-
-        rightFront.setVelocity(power2);
-        leftRear.setVelocity(power2);
-
-        double correctionAngle;
         do {
-           correctionAngle = checkDirection();
-            if(correctionAngle != 0){
-                PIDCalculationSpline(power1,power2);
-                rotateRobotWithPID(checkDirection());
-            } else PIDMovementSpline(power1,power2);
+            double v1 =( y + x + rx)/denominator;
+            double v2 = (y - x + rx)/denominator;
+            double v3 = (y - x - rx)/denominator;
+            double v4 =(y + x - rx)/denominator;
+
+            drive.leftFront.setPower(v1);
+            drive.leftRear.setPower(v2);
+            drive.rightFront.setPower(v3) ;
+            drive.rightRear.setPower(v4);
 
 
-            power1 = setMotorPower(Math.sin(angle + (Math.PI / 4)) * speed);
-            power2 = setMotorPower(Math.sin(angle - (Math.PI/4)) * speed);
 
-        } while(leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy());
+        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
 
-       stopping.driveStop();
-       setMotorsDisabled();
+        drive.leftFront.setVelocity(0);
+        drive.rightRear.setVelocity(0);
+        drive.rightFront.setVelocity(0);
+        drive.leftRear.setVelocity(0);
+
+        drive.setMotorsDisabled();
 
     }
-
     /**
      * Robot rotation functions
      * */
