@@ -86,9 +86,8 @@ public class Odometry {
         
                setRobotMotorsPower(0);
 
-               if (leftEncoder.getCurrentPosition() != 0){
-
-
+               if(forwardEncoder.getCurrentPosition() > distance){
+                   driveY(-forwardEncoder.getCurrentPosition(), 1);
                }
                setMotorsDisabled();
     }
