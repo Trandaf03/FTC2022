@@ -39,6 +39,7 @@ public class driveComponents {
     public DcMotorEx leftEncoder = null;
 
     //Gyro declaring
+
     public Gyro gyro = new Gyro();
 
     //driveUtilities declaring
@@ -164,7 +165,8 @@ public class driveComponents {
             yMovement(-nextY,speed);
         } else{
         // Diagonal movement{
-            spline(nextX,nextY,speed);
+            double t = 0;
+            nebunie(nextX,nextY,speed, t);
         }
     }
 
@@ -190,6 +192,7 @@ public class driveComponents {
         double rrPos = rightRear.getCurrentPosition();
         return (lfPos + lrPos + rfPos + rrPos)/4;
     }
+
     public void getEncoderAngle(double degrees, double power) {
 
         double  lp, rp;
@@ -293,7 +296,7 @@ public class driveComponents {
 
         //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
 
-        drive.setMotorsEnabled();
+        setMotorsEnabled();
 
         double y = -yDistance;
         double x = xDistance;
@@ -302,12 +305,12 @@ public class driveComponents {
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
 
         Thread.sleep(100);
-        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
-        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
         Thread.sleep(100);
-        drive.encoders.setTargetPositionXmovement(-(int)distance);
+        encoders.setTargetPositionXmovement(-(int)distance);
 
-        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
+        encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
 
         do {
             double v1 =( y + x + rx)/denominator;
@@ -315,23 +318,26 @@ public class driveComponents {
             double v3 = (y - x - rx)/denominator;
             double v4 =(y + x - rx)/denominator;
 
-            drive.leftFront.setPower(v1);
-            drive.leftRear.setPower(v2);
-            drive.rightFront.setPower(v3) ;
-            drive.rightRear.setPower(v4);
+            leftFront.setPower(v1);
+            leftRear.setPower(v2);
+            rightFront.setPower(v3) ;
+            rightRear.setPower(v4);
 
 
 
-        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
+        } while(leftFront.isBusy() && rightRear.isBusy() && rightFront.isBusy() && leftRear.isBusy());
 
-        drive.leftFront.setVelocity(0);
-        drive.rightRear.setVelocity(0);
-        drive.rightFront.setVelocity(0);
-        drive.leftRear.setVelocity(0);
+        leftFront.setVelocity(0);
+        rightRear.setVelocity(0);
+        rightFront.setVelocity(0);
+        leftRear.setVelocity(0);
 
-        drive.setMotorsDisabled();
+        setMotorsDisabled();
 
     }
+
+
+
     /**
      * Robot rotation functions
      * */

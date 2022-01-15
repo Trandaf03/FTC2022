@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robotComponents.driveComponents;
+import org.firstinspires.ftc.teamcode.robotComponents.odometry;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
@@ -12,12 +13,13 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 public class odometryRotationTest extends LinearOpMode {
 
     driveComponents drive = new driveComponents();
+    odometry odometry = new odometry();
     @Override
     public void runOpMode() throws InterruptedException {
 
         drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
 
-        double COUNTS_PER_CM_ENCODER = 100;
+        double COUNTS_PER_CM_ENCODER = odometry.COUNTS_PER_CM;
 
         waitForStart();
         if(opModeIsActive()) return;

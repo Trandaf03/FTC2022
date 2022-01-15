@@ -33,35 +33,10 @@ public class testingClass extends LinearOpMode {
 
         waitForStart();
         if(opModeIsActive());
-        nebunie(-62,-62,1,180);
-        nebunie(-62,-62,1,-180);
-        this.sleep(200);
-        //nebunie(0,-62,1,180);
 
         sleep(2000);
 
     }
-
-    /**original teleop function
-
-     double r = Math.hypot(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-     double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
-     double rightX = -gamepad1.right_stick_x;
-
-     final double v1 = r * Math.cos(robotAngle) + rightX;
-     final double v2 = r * Math.sin(robotAngle) - rightX;
-     final double v3 = r * Math.sin(robotAngle) + rightX;
-     final double v4 = r * Math.cos(robotAngle) - rightX;
-
-     frontLeft.setPower(v1);
-     frontRight.setPower(v2);
-     backLeft.setPower(v3);
-     backRight.setPower(v4);
-     */
-
-    /*//calcul care merge
-    Math.sin(angle + (Math.PI/4)) * speed
-     */
 
 
     //aicea mere unghiul dar nu si curba
@@ -173,56 +148,20 @@ public class testingClass extends LinearOpMode {
 
     }
 
-    //deducere
-    //TODO
-    public void nebunie(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
 
-        xDistance *= 1.1;
-        yDistance *= 1.5;
+    //TODO test this
+    public void driveWithVectors(double y, double x, double r)
+    {
+        double magnitude = Math.sqrt((y*y) + (x*x));
+        double angle = Math.atan2(x, -y) + (Math.PI / 4);
 
-        //distanta de mers --> ipotenuza
-        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
+        double FL_BR = Math.sin(angle) * magnitude;
+        double FR_BL = Math.cos(angle) * magnitude;
 
-        //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
-
-        drive.setMotorsEnabled();
-
-        double y = -yDistance;
-        double x = xDistance;
-        double rx = t;
-
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-
-        Thread.sleep(100);
-        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
-        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
-        Thread.sleep(100);
-        drive.encoders.setTargetPositionXmovement(-(int)distance);
-
-        drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.TO_POSITION);
-
-        do {
-            double v1 =( y + x + rx)/denominator;
-            double v2 = (y - x + rx)/denominator;
-            double v3 = (y - x - rx)/denominator;
-            double v4 =(y + x - rx)/denominator;
-
-            drive.leftFront.setPower(v1);
-            drive.leftRear.setPower(v2);
-            drive.rightFront.setPower(v3) ;
-            drive.rightRear.setPower(v4);
-
-
-
-        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && opModeIsActive());
-
-        drive.leftFront.setVelocity(0);
-        drive.rightRear.setVelocity(0);
-        drive.rightFront.setVelocity(0);
-        drive.leftRear.setVelocity(0);
-
-        drive.setMotorsDisabled();
-
+        drive.leftFront.setPower(FL_BR + r);
+        drive.rightFront.setPower(FR_BL - r);
+        drive.leftRear.setPower(FR_BL + r);
+        drive.rightRear.setPower(FL_BR - r);
     }
 
 
