@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.controlledPeriod;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 
-@TeleOp(name = "teleopteste")
+@TeleOp(name = "TeleopTeste")
 public class TeleOPteste extends LinearOpMode {
 
     driveComponents drive = new driveComponents();
@@ -22,10 +22,9 @@ public class TeleOPteste extends LinearOpMode {
         drive.forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive.leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         waitForStart();
-        if (opModeIsActive() && !isStopRequested()){
-            //drive.robotVelocityController(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        while(opModeIsActive() && !isStopRequested()){
+            drive.robotVelocityController(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-            drive.xMovement(-60, 0.25);
             double fata = drive.forwardEncoder.getCurrentPosition();
             double dreapta = drive.leftEncoder.getCurrentPosition();
 
@@ -34,7 +33,7 @@ public class TeleOPteste extends LinearOpMode {
             telemetry.addData("odometry dreapta: ", dreapta );
             telemetry.update();
 
-            this.sleep(6000000);
+
         }
     }
 }

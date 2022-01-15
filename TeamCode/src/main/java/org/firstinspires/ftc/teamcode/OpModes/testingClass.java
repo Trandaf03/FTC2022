@@ -1,15 +1,11 @@
-package org.firstinspires.ftc.teamcode.controlledPeriod;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import static org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.robotInfo.COUNTS_PER_CM;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.internal.ftdi.eeprom.FT_EEPROM_232H;
 import org.firstinspires.ftc.teamcode.robotComponents.driveComponents;
-import org.firstinspires.ftc.teamcode.robotComponents.handlingComponents;
-import org.firstinspires.ftc.teamcode.utilities.autonomousDriveUtilities.Gyro;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.encoderUsing;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.powerBehavior;
 import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;

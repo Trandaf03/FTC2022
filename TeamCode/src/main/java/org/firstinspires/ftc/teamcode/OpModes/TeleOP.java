@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.controlledPeriod;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

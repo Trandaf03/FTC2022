@@ -71,24 +71,24 @@ public class odometry {
 
     //fata spate
     public void driveY(double distance, double power){
-        
+
                drive.setMotorsEnabled();
                distance = distance * COUNTS_PER_CM;
-        
-        
-               forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-               leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-               forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-               leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        
+
+            forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
                drive.setRobotMotorsPower(power);
 
                while(forwardEncoder.getCurrentPosition() < distance){
                    telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/COUNTS_PER_CM);
                    telemetry.update();
                }
-        
+
                drive.setRobotMotorsPower(0);
 
                if(forwardEncoder.getCurrentPosition() > distance){
@@ -96,18 +96,21 @@ public class odometry {
                }
                drive.setMotorsDisabled();
     }
-    
+
 
     //laterale
     public void driveX(double distance, double power){
-        
+
                drive.setMotorsEnabled();
                distance = distance * COUNTS_PER_CM;
-        
-        
+
+
                forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+               leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
                forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        
+               leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
                drive.strafePower(power);
                while(forwardEncoder.getCurrentPosition() < distance){
                    telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/COUNTS_PER_CM);
@@ -115,15 +118,15 @@ public class odometry {
                }
 
                if (forwardEncoder.getCurrentPosition() != 0){
-                    
+
 
                 }
-        
+
                drive.setRobotMotorsPower(0);
                drive.setMotorsDisabled();
     }
 
-    public void nebunie(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
+    public void holonomicDrive(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
 
         xDistance *= 1.1;
         yDistance *= 1.5;
@@ -155,6 +158,8 @@ public class odometry {
             drive.leftRear.setPower(v2);
             drive.rightFront.setPower(v3) ;
             drive.rightRear.setPower(v4);
+
+
 
         } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && encoder_distance < distance);
 
