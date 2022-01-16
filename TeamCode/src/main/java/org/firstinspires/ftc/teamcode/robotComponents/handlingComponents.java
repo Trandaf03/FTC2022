@@ -16,7 +16,6 @@ public class handlingComponents {
     private DcMotor sliderMotor = null;
     private Servo rotationServo = null;
 
-    //TODO Set corect data to the next 3 variables
     static final double COUNTS_PER_MOTOR_REV    = 751.8 ;
     static final double DRIVE_GEAR_REDUCTION    = 1 ;
     static final double WHEEL_DIAMETER_CM   = 4.5 ;

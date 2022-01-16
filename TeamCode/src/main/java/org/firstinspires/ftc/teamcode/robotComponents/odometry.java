@@ -49,9 +49,9 @@ public class odometry {
         return leftEncoder.getCurrentPosition();
     }
 
-    private void initOdometry(){
+    public void initOdometry(){
         forwardEncoder = hardwareMap.get(DcMotorEx.class,"rotationEncoder");
-        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducking");
+        leftEncoder = hardwareMap.get(DcMotorEx.class,"ducky");
 
         forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
         leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -74,7 +74,7 @@ public class odometry {
 
                drive.setMotorsEnabled();
                distance = distance * COUNTS_PER_CM;
-
+ 
 
             forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
