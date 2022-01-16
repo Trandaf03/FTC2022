@@ -22,7 +22,7 @@ public class TeleOPteste extends LinearOpMode {
 
         drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
 
-        //TODO : test this
+        //TODO : test this and encoders reset
         //odometry.initOdometry();
 
         drive.forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
