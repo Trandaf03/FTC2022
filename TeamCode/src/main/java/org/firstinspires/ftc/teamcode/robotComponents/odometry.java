@@ -37,74 +37,103 @@ public class odometry {
     public static final double     COUNTS_PER_CM        = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * 3.1415);
 
 
-
-
-//    public void init(HardwareMap map, Telemetry telemetry){
-//        // hardware map linking
-//        this.telemetry = telemetry;
-//
-//
-//        forwardEncoder = map.get(DcMotorEx.class,"rotationEncoder");
-//        leftEncoder = map.get(DcMotorEx.class,"ducking");
-//
-//        forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
-//        leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
-//
-//        forwardEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        leftEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//
-//        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//
-//        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//    }
-public void holonomicDrive(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
-
-    xDistance *= 1.1;
-    yDistance *= 1.5;
-
-    //distanta de mers --> ipotenuza
-    double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
-    double encoder_distance = Math.hypot(leftEncoder.getCurrentPosition(), forwardEncoder.getCurrentPosition());
-
-    //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
-
-    drive.setMotorsEnabled();
-
-    double y = -yDistance;
-    double x = xDistance;
-    double rx = t;
-
-    double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+    public double returnY(){
+        return forwardEncoder.getCurrentPosition();
+    }
+    public double returnX(){
+        return leftEncoder.getCurrentPosition();
+    }
 
 
 
 
-    do {
-        double v1 =( y + x + rx)/denominator;
-        double v2 = (y - x + rx)/denominator;
-        double v3 = (y - x - rx)/denominator;
-        double v4 =(y + x - rx)/denominator;
-
-        drive.leftFront.setPower(v1);
-        drive.leftRear.setPower(v2);
-        drive.rightFront.setPower(v3) ;
-        drive.rightRear.setPower(v4);
+    //fata spate
+    public void driveY(double distance, double power){
 
 
+        distance = distance * COUNTS_PER_CM;
 
-    } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && encoder_distance < distance);
+        drive.setRobotMotorsPower(power*386.3*20);
+        //PIDmovement(power*386.3*20);
 
-    drive.leftFront.setVelocity(0);
-    drive.rightRear.setVelocity(0);
-    drive.rightFront.setVelocity(0);
-    drive.leftRear.setVelocity(0);
+        while(Math.abs(forwardEncoder.getCurrentPosition()) < Math.abs(distance)){
+            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.update();
+        }
 
-    drive.setMotorsDisabled();
 
-}
+        drive.setRobotMotorsPower(0);
+    }
+
+
+    //laterale
+    public void driveX(double distance, double power){
+
+        distance = distance * COUNTS_PER_CM;
+
+
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        drive.strafePower(power);
+        while(forwardEncoder.getCurrentPosition() < distance){
+            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.update();
+        }
+
+
+
+        drive.setRobotMotorsPower(0);
+    }
+
+    public void holonomicDrive(double xDistance, double yDistance, double speed, double t) throws InterruptedException{
+
+        xDistance *= 1.1;
+        yDistance *= 1.5;
+
+        //distanta de mers --> ipotenuza
+        double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
+        double encoder_distance = Math.hypot(leftEncoder.getCurrentPosition(), forwardEncoder.getCurrentPosition());
+
+        //double angle = Math.atan2(xDistance,yDistance); // corect --> unghi in radiani
+
+        drive.setMotorsEnabled();
+
+        double y = -yDistance;
+        double x = xDistance;
+        double rx = t;
+
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+
+
+
+        do {
+            double v1 =( y + x + rx)/denominator;
+            double v2 = (y - x + rx)/denominator;
+            double v3 = (y - x - rx)/denominator;
+            double v4 =(y + x - rx)/denominator;
+
+            drive.leftFront.setPower(v1);
+            drive.leftRear.setPower(v2);
+            drive.rightFront.setPower(v3) ;
+            drive.rightRear.setPower(v4);
+
+
+
+        } while(drive.leftFront.isBusy() && drive.rightRear.isBusy() && drive.rightFront.isBusy() && drive.leftRear.isBusy() && encoder_distance < distance);
+
+        drive.leftFront.setVelocity(0);
+        drive.rightRear.setVelocity(0);
+        drive.rightFront.setVelocity(0);
+        drive.leftRear.setVelocity(0);
+
+        drive.setMotorsDisabled();
+
+    }
 
 
 }

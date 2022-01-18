@@ -146,6 +146,15 @@ public class driveComponents {
     }
 
 
+    public double progressivePower(double targetPower){
+        double pow = 0;
+
+        while(pow != targetPower){
+
+            pow += 0.001;
+        }
+        return pow;
+    }
 
 
 
@@ -172,57 +181,7 @@ public class driveComponents {
         return (lfPos + lrPos + rfPos + rrPos)/4;
     }
 
-    public double returnY(){
-        return forwardEncoder.getCurrentPosition();
-    }
-    public double returnX(){
-        return leftEncoder.getCurrentPosition();
-    }
 
-
-
-
-    //fata spate
-    public void driveY(double distance, double power, double c){
-
-
-        distance = distance * c;
-
-        setRobotMotorsPower(power*386.3*20);
-        //PIDmovement(power*386.3*20);
-
-        while(Math.abs(forwardEncoder.getCurrentPosition()) < Math.abs(distance)){
-            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/c);
-            telemetry.update();
-        }
-
-
-        setRobotMotorsPower(0);
-    }
-
-
-    //laterale
-    public void driveX(double distance, double power){
-
-        distance = distance * COUNTS_PER_CM;
-
-
-        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        strafePower(power);
-        while(forwardEncoder.getCurrentPosition() < distance){
-            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/COUNTS_PER_CM);
-            telemetry.update();
-        }
-
-
-
-        setRobotMotorsPower(0);
-    }
 
 
 

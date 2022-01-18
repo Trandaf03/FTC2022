@@ -14,12 +14,10 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 @TeleOp(name = "TeleopTeste")
 public class TeleOPteste extends LinearOpMode {
 
-    private static final double     COUNTS_PER_MOTOR_REV    = 8949.99995556 / 6;
-    private static final double     DRIVE_GEAR_REDUCTION    = 1 ;
-    private static final double     WHEEL_DIAMETER_CM   = 4 ;
-    public static final double     COUNTS_PER_CM        = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * Math.PI);
+
 
     driveComponents drive = new driveComponents();
+    odometry odometry = new odometry();
 
 
     @Override
@@ -32,10 +30,13 @@ public class TeleOPteste extends LinearOpMode {
         if(opModeIsActive() ){
             //drive.robotVelocityController(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-            drive.driveY(62, 1, COUNTS_PER_CM);
+            /**TODO :
+             *             Test distance correction
+             *             Test progressive power
+             */
+            odometry.driveY(62, 1);
             this.sleep(500);
-            drive.driveY(62, -1, COUNTS_PER_CM);
-
+            odometry.driveY(62, -1);
 
 
         }
