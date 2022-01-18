@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.robotComponents.driveComponents;
 import org.firstinspires.ftc.teamcode.robotComponents.odometry;
@@ -13,8 +14,12 @@ import org.firstinspires.ftc.teamcode.utilities.driveUtilities.robotDirection;
 @TeleOp(name = "TeleopTeste")
 public class TeleOPteste extends LinearOpMode {
 
+    private static final double     COUNTS_PER_MOTOR_REV    = 8949.99995556 / 6;
+    private static final double     DRIVE_GEAR_REDUCTION    = 1 ;
+    private static final double     WHEEL_DIAMETER_CM   = 4 ;
+    public static final double     COUNTS_PER_CM        = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_CM * Math.PI);
+
     driveComponents drive = new driveComponents();
-    odometry odometry = new odometry();
 
 
     @Override
@@ -22,26 +27,20 @@ public class TeleOPteste extends LinearOpMode {
 
         drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
 
-        //TODO : test this and encoders reset
-        //odometry.initOdometry();
-
-        drive.forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        drive.leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
 
         waitForStart();
-        while(opModeIsActive() && !isStopRequested()){
-            drive.robotVelocityController(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        if(opModeIsActive() ){
+            //drive.robotVelocityController(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-            double fata = drive.forwardEncoder.getCurrentPosition();
-            double dreapta = drive.leftEncoder.getCurrentPosition();
+            drive.driveY(62, 1, COUNTS_PER_CM);
+            this.sleep(500);
+            drive.driveY(62, -1, COUNTS_PER_CM);
 
-            //TODO : test X odometry wheel
-            telemetry.addData("odometry fata : ", fata );
-            telemetry.addData("odometry dreapta: ", dreapta );
-            telemetry.update();
 
 
         }
+
+
     }
+
 }

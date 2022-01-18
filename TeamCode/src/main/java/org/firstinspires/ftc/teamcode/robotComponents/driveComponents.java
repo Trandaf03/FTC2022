@@ -80,9 +80,9 @@ public class driveComponents {
      * */
     Telemetry telemetry;
     public void init(HardwareMap map, Telemetry telemetry,
-                                    robotDirection.ROBOT_DIRECTIONS heading,
-                                    powerBehavior.ROBOT_BREAKING breakingMode,
-                                    encoderUsing.ENCODER_RUNNING_MODE encoderMode){
+                     robotDirection.ROBOT_DIRECTIONS heading,
+                     powerBehavior.ROBOT_BREAKING breakingMode,
+                     encoderUsing.ENCODER_RUNNING_MODE encoderMode){
         // hardware map linking
         this.telemetry = telemetry;
         leftFront = map.get(DcMotorEx.class, "leftFront");
@@ -109,7 +109,7 @@ public class driveComponents {
         stopping.driveStop();
 
         forwardEncoder = map.get(DcMotorEx.class,"rotationEncoder");
-        leftEncoder = map.get(DcMotorEx.class,"ducky");
+        leftEncoder = map.get(DcMotorEx.class,"ducking");
 
         forwardEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
         leftEncoder.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -171,6 +171,60 @@ public class driveComponents {
         double rrPos = rightRear.getCurrentPosition();
         return (lfPos + lrPos + rfPos + rrPos)/4;
     }
+
+    public double returnY(){
+        return forwardEncoder.getCurrentPosition();
+    }
+    public double returnX(){
+        return leftEncoder.getCurrentPosition();
+    }
+
+
+
+
+    //fata spate
+    public void driveY(double distance, double power, double c){
+
+
+        distance = distance * c;
+
+        setRobotMotorsPower(power*386.3*20);
+        //PIDmovement(power*386.3*20);
+
+        while(Math.abs(forwardEncoder.getCurrentPosition()) < Math.abs(distance)){
+            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/c);
+            telemetry.update();
+        }
+
+
+        setRobotMotorsPower(0);
+    }
+
+
+    //laterale
+    public void driveX(double distance, double power){
+
+        distance = distance * COUNTS_PER_CM;
+
+
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        strafePower(power);
+        while(forwardEncoder.getCurrentPosition() < distance){
+            telemetry.addData("acum sunt la cm", forwardEncoder.getCurrentPosition()/COUNTS_PER_CM);
+            telemetry.update();
+        }
+
+
+
+        setRobotMotorsPower(0);
+    }
+
+
 
     /**
      * Gyro functions
