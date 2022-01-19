@@ -185,6 +185,11 @@ public class driveComponents {
     //fata spate
     public void driveY(double distance, double power, double c){
 
+        forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        forwardEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         distance = distance * c;
 
@@ -196,7 +201,18 @@ public class driveComponents {
             telemetry.update();
         }
 
+        if (Math.abs(forwardEncoder.getCurrentPosition()) > Math.abs(distance)){
+            double diff = Math.abs(forwardEncoder.getCurrentPosition()) - Math.abs(distance);
 
+            forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            setRobotMotorsPower(0.5) ;
+
+            while(Math.abs(forwardEncoder.getCurrentPosition()) < diff){}
+            setRobotMotorsPower(0);
+
+        }
         setRobotMotorsPower(0);
     }
 
