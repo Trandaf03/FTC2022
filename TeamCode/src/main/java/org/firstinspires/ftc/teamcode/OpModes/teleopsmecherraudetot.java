@@ -46,6 +46,15 @@ public class teleopsmecherraudetot extends LinearOpMode {
                 colecteaza = false;
             }
 
+            double fata = drive.forwardEncoder.getCurrentPosition();
+            double dreapta = drive.leftEncoder.getCurrentPosition();
+
+
+            telemetry.addData("odometry fata : ", fata );
+            telemetry.addData("odometry dreapta: ", dreapta );
+            telemetry.update();
+
+
 
         }
 

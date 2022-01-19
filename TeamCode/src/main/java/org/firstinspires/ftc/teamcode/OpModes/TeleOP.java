@@ -36,7 +36,9 @@ public class TeleOP extends LinearOpMode {
     boolean collectorIsPowered = false;
     boolean duckyIsPowered = false;
     int servoPosition = 1;
-    handlingComponents.REMOVING_POSITIONS lastPosition;
+    handlingComponents.REMOVING_POSITIONS lastPositionCulisanta;
+    
+    
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,6 +53,7 @@ public class TeleOP extends LinearOpMode {
         drive.init(hardwareMap, telemetry, robotDirection.ROBOT_DIRECTIONS.FORWARD, powerBehavior.ROBOT_BREAKING.BRAKE, encoderUsing.ENCODER_RUNNING_MODE.RUN_USING);
         handle.initHandlingComponents(hardwareMap);
         ducky.initDuckRotation(hardwareMap);
+        collector.initCollecting(hardwareMap);
 
         /**
          * Waiting for the opMode to start
@@ -103,6 +106,7 @@ public class TeleOP extends LinearOpMode {
                 }
                 if(servoPosition == 0){
                     handle.setServoPosition(handlingComponents.COLLECTING_POSITIONS.SERVO_MID_POS);
+                    servoPosition = 1;
                 }
                 this.sleep(200);
             }
@@ -110,17 +114,18 @@ public class TeleOP extends LinearOpMode {
             /**
              * Pulley movement
              * */
+            
             if(this.gamepad1.dpad_down){
                 handle.sliderGoToPosition(handlingComponents.REMOVING_POSITIONS.LOW_POS);
-                lastPosition = handlingComponents.REMOVING_POSITIONS.LOW_POS;
             }
             if(this.gamepad1.dpad_left){
                 handle.sliderGoToPosition(handlingComponents.REMOVING_POSITIONS.MID_POS);
-                lastPosition = handlingComponents.REMOVING_POSITIONS.MID_POS;
             }
             if(this.gamepad1.dpad_right){
                 handle.sliderGoToPosition(handlingComponents.REMOVING_POSITIONS.HIGH_POS);
-                lastPosition = handlingComponents.REMOVING_POSITIONS.HIGH_POS;
+                 }
+            if(this.gamepad1.dpad_up){
+                handle.sliderGoToPosition(handlingComponents.REMOVING_POSITIONS.ZERO_POS);
             }
 
         }

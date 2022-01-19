@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class handlingComponents {
 
-    private DcMotor sliderMotor = null;
-    private Servo rotationServo = null;
+    public DcMotor sliderMotor = null;
+    public Servo rotationServo = null;
 
     static final double COUNTS_PER_MOTOR_REV    = 751.8 ;
     static final double DRIVE_GEAR_REDUCTION    = 1 ;
@@ -88,15 +88,30 @@ public class handlingComponents {
      * LOW_POS,MID_POS and HIGH_POS are the 3 variables where the pulley needs to go
      *
      * */
+    REMOVING_POSITIONS lastPos = REMOVING_POSITIONS.ZERO_POS;
     private int returnPositionTicks(REMOVING_POSITIONS position){
-        if(position == REMOVING_POSITIONS.LOW_POS){
-            return (int) (10 * COUNTS_PER_CM);
-        }
-        if(position == REMOVING_POSITIONS.MID_POS){
-            return (int) (25 * COUNTS_PER_CM);
-        }
-        if(position == REMOVING_POSITIONS.HIGH_POS){
-            return (int) (60 * COUNTS_PER_CM);
+        switch (position){
+            case LOW_POS:
+                lastPos = REMOVING_POSITIONS.LOW_POS;
+                return (int) (10 * COUNTS_PER_CM);
+            case MID_POS:
+                lastPos = REMOVING_POSITIONS.MID_POS;
+                return (int) (20 * COUNTS_PER_CM);
+            case HIGH_POS:
+                lastPos = REMOVING_POSITIONS.HIGH_POS;
+                return (int) (30 * COUNTS_PER_CM);
+            case ZERO_POS:
+                switch (lastPos){
+                    case LOW_POS:
+                        lastPos = REMOVING_POSITIONS.LOW_POS;
+                        return -(int) (10 * COUNTS_PER_CM);
+                    case MID_POS:
+                        lastPos = REMOVING_POSITIONS.MID_POS;
+                        return -(int) (20 * COUNTS_PER_CM);
+                    case HIGH_POS:
+                        lastPos = REMOVING_POSITIONS.HIGH_POS;
+                        return -(int) (30 * COUNTS_PER_CM);
+                }
         }
         return  0;
     }
