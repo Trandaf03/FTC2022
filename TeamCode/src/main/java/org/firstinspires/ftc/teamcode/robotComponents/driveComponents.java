@@ -217,10 +217,18 @@ public class driveComponents {
     }
 
 
+<<<<<<< HEAD
     //laterale
     public void driveX(double distance, double power){
 
         distance = distance * COUNTS_PER_CM;
+=======
+        double power1 = Math.sin(angle + (Math.PI / 4)) * speed;
+        double power2 = Math.sin(angle - (Math.PI/4)) * speed;
+
+        leftFront.setVelocity(power1);
+        rightRear.setVelocity(power1);
+>>>>>>> parent of 8d141ea (Update driveComponents.java)
 
 
         forwardEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
