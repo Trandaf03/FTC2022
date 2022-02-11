@@ -42,7 +42,11 @@ public class testingClass extends LinearOpMode {
     public void spline(double xDistance, double yDistance, double speed) throws InterruptedException{
         double distance = Math.hypot(xDistance,yDistance) * COUNTS_PER_CM;
 
+<<<<<<< HEAD
         double angle = Math.toRadians(Math.toDegrees(Math.atan2(distance,xDistance)));
+=======
+        double angle = 2 * Math.PI - Math.atan2(yDistance,xDistance);
+>>>>>>> parent of 53a4520 (toate boalele)
         drive.setMotorsEnabled();
         Thread.sleep(100);
         drive.encoders.setEncoderMode(encoderUsing.ENCODER_RUNNING_MODE.STOP_AND_RESET);
